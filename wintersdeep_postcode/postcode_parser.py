@@ -17,13 +17,13 @@ class PostcodeParser(object):
     AreaRegex = r"(?P<area>[A-Z]{1,2})"
 
     ## Regular expression pattern expressing the format of the "district" portion of a postcode.
-    DistrictRegex = r"(?P<district>[0-9]{1,2})"
+    DistrictRegex = r"(?P<district>([0-9]{1,2})|([0-9][A-Z]))"
 
     ## Regular expression pattern expressing the format of the "sector" portion of a postcode.
     SectorRegex = r"(?P<sector>[0-9])"
 
     ## Regular expression pattern expressing the format of the "subsector" portion of a postcode.
-    SubsectorRegex = r"(?P<subsector>[A-Z]{2})"
+    SubsectorRegex = r"(?P<unit>[A-Z]{2})"
 
     ## Regular expression used if the parser is using strict whitespace rules.
     #  @remarks postcodes must use a single space character in this mode.
@@ -100,14 +100,12 @@ class PostcodeParser(object):
     @staticmethod
     def _build_input_translater(trim=True, uppercase=True):
         
-        translation_pipeline = []
+        translation_pipeline = [ str ]
 
         if trim:        translation_pipeline.append( str.strip )
         if uppercase:   translation_pipeline.append( str.upper )
 
-        if len(translation_pipeline) == 0:
-            return lambda nop: nop
-        elif len(translation_pipeline) == 1:
+        if len(translation_pipeline) == 1:
             return translation_pipeline[0]
         else:
             def compose(lhs, rhs):
@@ -139,7 +137,7 @@ class PostcodeParser(object):
         # sort out whitespace handling
         whitespace_stratergy = kwargs.pop('whitespace', 'tolerant')
         whitespace_translate = PostcodeParser._get_whitespace_pattern
-        self.whitespace_regex = whitespace_translate(strict_stratergy)
+        self.whitespace_regex = whitespace_translate(whitespace_stratergy)
 
         # load other options
         self.translate_input = PostcodeParser._build_input_translater(
@@ -151,6 +149,29 @@ class PostcodeParser(object):
         self.postcode_regex = PostcodeParser._build_parser_regex(
             whitespace_regex = self.whitespace_regex
         )
+
+    ## Parses an input string into a postcode.
+    #  @param self the instance of the object that is invoking this method
+    #  @param input_string the input string to be parsed into a postcode.
+    #  @returns a Postcode object that was parsed from the input string.
+    def parse(self, input_string):
+
+        transformed_string = self.translate_input(input_string)
+        postcode_match = self.postcode_regex.match(transformed_string)
+
+        if postcode_match:
+            return True
+        else:
+            # we are unable to parse the given input - raise a parse error
+            from wintersdeep_postcode.exceptions import ParseError
+            raise ParseError(input_string, self)
+
+    ## allows directly invoking the class to parse input
+    #  @param self the instance of the object that is invoking this method.
+    #  @param input_string the string that was provided by the user.
+    def __call__(self, input_string):
+        return self.parse(input_string)       
+
 
 if __name__ == "__main__":
     

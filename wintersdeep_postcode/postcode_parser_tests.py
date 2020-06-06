@@ -131,6 +131,174 @@ class TestPostcodeParser(TestCase):
 
         self.assertRaises(error, PostcodeParser._build_parser_regex, '[' )
 
+    ## This test to make sure we throw if we try and create a parser with an unknown
+    #  method of handling whitespace in a predicable manner
+    def test_parse_with_bad_whitespace_handler(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        self.assertRaises( ValueError, PostcodeParser, 
+            trim_whitespace=False, 
+            force_case=False, 
+            whitespace='error'
+        )
+        
+
+    ## This test is for the parser in its most strict configuration - strict whitepace
+    #  handling, and no input translation. This is to ensure that in this mode, only 
+    #  well formed postcodes are parsed. 
+    def test_parse_with_no_translation(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        postcode_parser = PostcodeParser(trim_whitespace=False, force_case=False, whitespace='strict')
+        
+        self.assertRaises(ParseError, postcode_parser, "aa0 0aa")
+        self.assertRaises(ParseError, postcode_parser, "AA00AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0  0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t 0AA")
+        self.assertRaises(ParseError, postcode_parser, " AA0 0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0 0AA ")
+        self.assertRaises(ParseError, postcode_parser, " AA0 0AA ")
+        self.assertRaises(ParseError, postcode_parser, 1)
+        self.assertRaises(ParseError, postcode_parser, False)
+    
+        self.assertIsNotNone( postcode_parser("A0 0AA") )
+        self.assertIsNotNone( postcode_parser("A00 0AA") )
+        self.assertIsNotNone( postcode_parser("A0A 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA00 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
+    ## This test is for the parser in a strict configuration - strict whitepace
+    #  handling, and only case correction enabled. This is to ensure that in 
+    #  this mode, well formed postcodes of any case are parsed. 
+    def test_parse_with_caps_correction(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        postcode_parser = PostcodeParser(trim_whitespace=False, force_case=True, whitespace='strict')
+        
+        self.assertIsNotNone( postcode_parser("aa0 0aa") )
+        self.assertRaises(ParseError, postcode_parser, "AA00AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0  0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t 0AA")
+        self.assertRaises(ParseError, postcode_parser, " AA0 0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0 0AA ")
+        self.assertRaises(ParseError, postcode_parser, " AA0 0AA ")
+        self.assertRaises(ParseError, postcode_parser, 1)
+        self.assertRaises(ParseError, postcode_parser, False)
+    
+        self.assertIsNotNone( postcode_parser("A0 0AA") )
+        self.assertIsNotNone( postcode_parser("A00 0AA") )
+        self.assertIsNotNone( postcode_parser("A0A 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA00 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
+    ## This test is for the parser in a strict configuration - strict whitepace
+    #  handling, and ony whitepace trimming enabled. This is to ensure that in this 
+    #  mode, well formed postcodes with whitespace padding are parsed correctly. 
+    def test_parse_with_trimmed_whitespace(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=False, whitespace='strict')
+        
+        self.assertRaises(ParseError, postcode_parser, "aa0 0aa")
+        self.assertRaises(ParseError, postcode_parser, "AA00AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0  0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t 0AA")
+        self.assertIsNotNone( postcode_parser(" AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA ") )
+        self.assertIsNotNone( postcode_parser(" AA0 0AA ") )
+        self.assertRaises(ParseError, postcode_parser, 1)
+        self.assertRaises(ParseError, postcode_parser, False)
+    
+        self.assertIsNotNone( postcode_parser("A0 0AA") )
+        self.assertIsNotNone( postcode_parser("A00 0AA") )
+        self.assertIsNotNone( postcode_parser("A0A 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA00 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
+    ## This test is for the parser in a severe configuration - strict whitepace
+    #  handling, but full pre-processing enabled. This is to ensure that in this 
+    #  mode, well formed postcodes which may be slightly "dirty" are parsed. 
+    def test_parse_with_full_translation(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='strict')
+        
+        self.assertIsNotNone( postcode_parser("aa0 0aa") )
+        self.assertRaises(ParseError, postcode_parser, "AA00AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0  0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t 0AA")
+        self.assertIsNotNone( postcode_parser(" AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA ") )
+        self.assertIsNotNone( postcode_parser(" AA0 0AA ") )
+        self.assertRaises(ParseError, postcode_parser, 1)
+        self.assertRaises(ParseError, postcode_parser, False)
+    
+        self.assertIsNotNone( postcode_parser("A0 0AA") )
+        self.assertIsNotNone( postcode_parser("A00 0AA") )
+        self.assertIsNotNone( postcode_parser("A0A 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA00 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
+    ## This test is for the parser in a tolerant configuration - tolerant whitepace
+    #  handling, and full pre-processing enabled. This is to ensure that in this 
+    #  mode, well formed postcodes which may be slightly "dirty" are parsed. 
+    def test_parse__tolerant(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='tolerant')
+        
+        self.assertIsNotNone( postcode_parser("aa0 0aa") )
+        self.assertIsNotNone( postcode_parser("AA00AA") )
+        self.assertRaises(ParseError, postcode_parser, "AA0  0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t0AA")
+        self.assertRaises(ParseError, postcode_parser, "AA0\t 0AA")
+        self.assertIsNotNone( postcode_parser(" AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA ") )
+        self.assertIsNotNone( postcode_parser(" AA0 0AA ") )
+        self.assertRaises(ParseError, postcode_parser, 1)
+        self.assertRaises(ParseError, postcode_parser, False)
+    
+        self.assertIsNotNone( postcode_parser("A0 0AA") )
+        self.assertIsNotNone( postcode_parser("A00 0AA") )
+        self.assertIsNotNone( postcode_parser("A0A 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA00 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
+    ## This test is for the parser in a lenient configuration - lenient whitepace
+    #  handling, and full pre-processing enabled. This is to ensure that in this 
+    #  mode, well formed postcodes which may be slightly "dirty" are parsed. 
+    def test_parse__lenient(self):
+
+        from wintersdeep_postcode.exceptions import ParseError
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='lenient')
+        
+        self.assertIsNotNone( postcode_parser("aa0 0aa") )
+        self.assertIsNotNone( postcode_parser("AA00AA") )
+        self.assertIsNotNone( postcode_parser("AA0  0AA") )
+        self.assertIsNotNone( postcode_parser("AA0\t0AA") )
+        self.assertIsNotNone( postcode_parser("AA0\t 0AA") )
+        self.assertIsNotNone( postcode_parser(" AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA ") )
+        self.assertIsNotNone( postcode_parser(" AA0 0AA ") )
+        self.assertRaises(ParseError, postcode_parser, 1)
+        self.assertRaises(ParseError, postcode_parser, False)
+    
+        self.assertIsNotNone( postcode_parser("A0 0AA") )
+        self.assertIsNotNone( postcode_parser("A00 0AA") )
+        self.assertIsNotNone( postcode_parser("A0A 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0 0AA") )
+        self.assertIsNotNone( postcode_parser("AA00 0AA") )
+        self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
         
 if __name__ ==  "__main__":
 
