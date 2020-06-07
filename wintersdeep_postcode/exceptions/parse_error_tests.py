@@ -21,7 +21,7 @@ class TestParseError(TestCase):
     ## Tests that the parse error object is being properly derived - possibly a 
     #  trivial check, but ensures that we remember to note this as a breaking
     #  change if we modify it down the line (some people may catch on these types)
-    def test_parse_error_types(self):
+    def test__ParseError__parse_error_types(self):
         parser_obj = object()
         error_object = ParseError("", parser_obj)
         self.assertIsInstance(error_object, Exception)
@@ -30,7 +30,7 @@ class TestParseError(TestCase):
         self.assertNotIsInstance(error_object, TypeError)
 
     ## Tests that parse errors are being constructed properly.
-    def test_parse_error_ctor(self):
+    def test__ParseError_ctor(self):
         parser_obj = object()
         error_object = ParseError("abc123", parser_obj)
         self.assertEqual( str(error_object), "Invalid postcode structure 'abc123'." )

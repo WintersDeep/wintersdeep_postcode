@@ -21,7 +21,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_get_whitespace_pattern raises an exception when 
     #  unrecognised type strings are provided to the method.
-    def test_get_whitespace_pattern__unsupported(self):
+    def test__PostcodeParser_get_whitespace_pattern__unsupported(self):
         self.assertRaises(ValueError, PostcodeParser._get_whitespace_pattern, 'unsupported')
         self.assertRaises(ValueError, PostcodeParser._get_whitespace_pattern, 'TOLERANT')
         self.assertRaises(ValueError, PostcodeParser._get_whitespace_pattern, 'tolerant ')
@@ -32,7 +32,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_get_whitespace_pattern creates a suitable pattern
     #  when created with the 'strict' keyword.
-    def test_get_whitespace_pattern__strict(self):
+    def test__PostcodeParser_get_whitespace_pattern__strict(self):
 
         whitespace_pattern = PostcodeParser._get_whitespace_pattern('strict')
         test_regex = compile(f"^{whitespace_pattern}$")
@@ -48,7 +48,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_get_whitespace_pattern creates a suitable pattern
     #  when created with the 'tolerant' keyword.
-    def test_get_whitespace_pattern__tolerant(self):
+    def test__PostcodeParser_get_whitespace_pattern__tolerant(self):
 
         whitespace_pattern = PostcodeParser._get_whitespace_pattern('tolerant')
         test_regex = compile(f"^{whitespace_pattern}$")
@@ -64,7 +64,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_get_whitespace_pattern creates a suitable pattern
     #  when created with the 'lenient' keyword.
-    def test_get_whitespace_pattern__lenient(self):
+    def test__PostcodeParser_get_whitespace_pattern__lenient(self):
 
         whitespace_pattern = PostcodeParser._get_whitespace_pattern('lenient')
         test_regex = compile(f"^{whitespace_pattern}$")
@@ -80,7 +80,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_build_input_translater method creates functions
     #  that perform the expected actions - no operation pipeline
-    def test_build_input_translator__nop(self):
+    def test__PostcodeParser_build_input_translator__nop(self):
 
         pipeline = PostcodeParser._build_input_translater(trim=False, uppercase=False)
 
@@ -90,7 +90,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_build_input_translater method creates functions
     #  that perform the expected actions - trim only pipeline
-    def test_build_input_translator__trim(self):
+    def test__PostcodeParser_build_input_translator__trim(self):
 
         pipeline = PostcodeParser._build_input_translater(trim=True, uppercase=False)
 
@@ -100,7 +100,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_build_input_translater method creates functions
     #  that perform the expected actions - uppercase only pipeline
-    def test_build_input_translator__uppercase(self):
+    def test__PostcodeParser_build_input_translator__uppercase(self):
 
         pipeline = PostcodeParser._build_input_translater(trim=False, uppercase=True)
 
@@ -110,7 +110,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the PostcodeParser::_build_input_translater method creates functions
     #  that perform the expected actions - full pipeline
-    def test_build_input_translator__full(self):
+    def test__PostcodeParser_build_input_translator__full(self):
 
         pipeline = PostcodeParser._build_input_translater(trim=True, uppercase=True)
 
@@ -120,7 +120,7 @@ class TestPostcodeParser(TestCase):
 
     ## tests that the function responsible for creating the parser regex, produces a
     #  usable regular expression object - and behaves in a predictable way to bad input 
-    def test_build_parser_regex(self):
+    def test__PostcodeParser_build_parser_regex(self):
 
         from re import error
 
@@ -133,7 +133,7 @@ class TestPostcodeParser(TestCase):
 
     ## This test to make sure we throw if we try and create a parser with an unknown
     #  method of handling whitespace in a predicable manner
-    def test_parse_with_bad_whitespace_handler(self):
+    def test__PostcodeParser_parse__with_bad_whitespace_handler(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         self.assertRaises( ValueError, PostcodeParser, 
@@ -146,7 +146,7 @@ class TestPostcodeParser(TestCase):
     ## This test is for the parser in its most strict configuration - strict whitepace
     #  handling, and no input translation. This is to ensure that in this mode, only 
     #  well formed postcodes are parsed. 
-    def test_parse_with_no_translation(self):
+    def test__PostcodeParser_parse__with_no_translation(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         postcode_parser = PostcodeParser(trim_whitespace=False, force_case=False, whitespace='strict')
@@ -172,7 +172,7 @@ class TestPostcodeParser(TestCase):
     ## This test is for the parser in a strict configuration - strict whitepace
     #  handling, and only case correction enabled. This is to ensure that in 
     #  this mode, well formed postcodes of any case are parsed. 
-    def test_parse_with_caps_correction(self):
+    def test__PostcodeParser_parse__with_caps_correction(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         postcode_parser = PostcodeParser(trim_whitespace=False, force_case=True, whitespace='strict')
@@ -198,7 +198,7 @@ class TestPostcodeParser(TestCase):
     ## This test is for the parser in a strict configuration - strict whitepace
     #  handling, and ony whitepace trimming enabled. This is to ensure that in this 
     #  mode, well formed postcodes with whitespace padding are parsed correctly. 
-    def test_parse_with_trimmed_whitespace(self):
+    def test__PostcodeParser_parse__with_trimmed_whitespace(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         postcode_parser = PostcodeParser(trim_whitespace=True, force_case=False, whitespace='strict')
@@ -224,7 +224,7 @@ class TestPostcodeParser(TestCase):
     ## This test is for the parser in a severe configuration - strict whitepace
     #  handling, but full pre-processing enabled. This is to ensure that in this 
     #  mode, well formed postcodes which may be slightly "dirty" are parsed. 
-    def test_parse_with_full_translation(self):
+    def test__PostcodeParser_parse__with_full_translation(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='strict')
@@ -250,7 +250,7 @@ class TestPostcodeParser(TestCase):
     ## This test is for the parser in a tolerant configuration - tolerant whitepace
     #  handling, and full pre-processing enabled. This is to ensure that in this 
     #  mode, well formed postcodes which may be slightly "dirty" are parsed. 
-    def test_parse__tolerant(self):
+    def test__PostcodeParser_parse__tolerant(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='tolerant')
@@ -276,7 +276,7 @@ class TestPostcodeParser(TestCase):
     ## This test is for the parser in a lenient configuration - lenient whitepace
     #  handling, and full pre-processing enabled. This is to ensure that in this 
     #  mode, well formed postcodes which may be slightly "dirty" are parsed. 
-    def test_parse__lenient(self):
+    def test__PostcodeParser_parse__lenient(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='lenient')
