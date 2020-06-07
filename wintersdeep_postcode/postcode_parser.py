@@ -160,8 +160,21 @@ class PostcodeParser(object):
         postcode_match = self.postcode_regex.match(transformed_string)
 
         if postcode_match:
-            return True
+            
+            from wintersdeep_postcode.postcode import Postcode
+            
+            postcode = Postcode()
+            postcode.outward_area       = postcode_match.group("area")
+            postcode.outward_district   = postcode_match.group("district")
+            postcode.inward_sector      = postcode_match.group("sector")
+            postcode.inward_unit        = postcode_match.group("unit")
+
+            return postcode
+
         else:
+
+            # TBD: handle special cases (postcode that do not conform to structure norms).
+
             # we are unable to parse the given input - raise a parse error
             from wintersdeep_postcode.exceptions import ParseError
             raise ParseError(input_string, self)
