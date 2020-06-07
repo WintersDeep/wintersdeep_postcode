@@ -118,19 +118,6 @@ class TestPostcodeParser(TestCase):
         self.assertEqual( pipeline(" TRIM TEST\t "), "TRIM TEST" )
         self.assertEqual( pipeline("Uppercase Test"), "UPPERCASE TEST" )
 
-    ## tests that the function responsible for creating the parser regex, produces a
-    #  usable regular expression object - and behaves in a predictable way to bad input 
-    def test__PostcodeParser_build_parser_regex(self):
-
-        from re import error
-
-        test_A_delimiter = PostcodeParser._build_parser_regex("A")
-        self.assertIsNotNone ( test_A_delimiter.match("E20A2ST") )
-        self.assertIsNone    ( test_A_delimiter.match("E20 2ST") )
-        self.assertIsNone    ( test_A_delimiter.match("WHATEVR") )
-
-        self.assertRaises(error, PostcodeParser._build_parser_regex, '[' )
-
     ## This test to make sure we throw if we try and create a parser with an unknown
     #  method of handling whitespace in a predicable manner
     def test__PostcodeParser_ctor__with_bad_whitespace_handler(self):
@@ -298,6 +285,45 @@ class TestPostcodeParser(TestCase):
         self.assertIsNotNone( postcode_parser("AA0 0AA") )
         self.assertIsNotNone( postcode_parser("AA00 0AA") )
         self.assertIsNotNone( postcode_parser("AA0A 0AA") )
+
+    ## tests that the _get_parser_regex_list throws as expected when given bad params
+    def test__PostcodeParser_get_parser_regex_list__bad_args(self):
+        self.assertRaises(ValueError, PostcodeParser._get_parser_regex_list, type_list=[])
+
+    ## tests that when we ask for the default parser (passing None, or ommiting) we 
+    #  get back a parser that loads all postcode types.
+    def test__PostcodeParser_get_parser_regex_list__all_types(self):
+        
+        from re import Pattern
+        from wintersdeep_postcode.postcode_types import postcode_type_objects
+
+        parser_list = PostcodeParser._get_parser_regex_list(type_list=None)
+        
+        # make sure it appears we loaded all types (basic count check only)
+        self.assertEqual( len(postcode_type_objects), len(parser_list) )
+        
+        # and that the returned list appears usable
+        for regex, factory in parser_list:
+            self.assertIsInstance(regex, Pattern)
+            self.assertTrue( callable(factory) )
+
+        # and that the default list, is still the same as the None call.
+        self.assertListEqual( parser_list, PostcodeParser._get_parser_regex_list() )
+        
+    ## tests that when we ask for a selective parser (passing a specific list) we 
+    #  get back a parser that is loaded correctly
+    def test__PostcodeParser_get_parser_regex_list__specific_type(self):
+        
+        from wintersdeep_postcode.postcode_types import postcode_type_objects
+
+        test_type = postcode_type_objects[0]
+        parser_list = PostcodeParser._get_parser_regex_list(
+            type_list=[ test_type.PostcodeType ]
+        )
+        
+        # make sure it appears we loaded all types (basic count check only)
+        self.assertEqual( len(parser_list), 1 )
+        self.assertIs( parser_list[0][1], test_type)
         
 if __name__ ==  "__main__":
 

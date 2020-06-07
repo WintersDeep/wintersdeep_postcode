@@ -1,15 +1,50 @@
+#  python3 imports
+from re import compile as compile_regex
 
 ## UK Postcode Class
 #  @summary This class represents the parsed form of a UK postcode.
 class Postcode(object):
 
-    def __init__(self):
-        self.outward_area = ""
-        self.outward_district = ""
-        self.inward_sector = ""
-        self.inward_unit = ""
+    ## The type of postcode represented by this object
+    #  @param this should be overriden in derived classes.
+    PostcodeType = 'unspecified'
+
+    ## Helper method used to compile regular expressions.
+    #  @param args parts of the regular expression to join and compile.
+    #  @remarks prevents having to specifically import re imto implementations, 
+    #    and standardises join logic
+    @staticmethod
+    def CompileRegex(*args):
+        return compile_regex( "".join(
+            [ r'^' ] + [ *args ] + [ r'$' ]
+        ))
         
+    ## Creates a new instance of the postcode class.
+    #  @param self the instance of the object that is invoking this method.
+    #  @param regex_match the regular expression that triggered building this object.
+    def __init__(self, regex_match):
+        self._original_regex_match = regex_match
+        self.is_validated = False
+    
+    ## The type of postcode that this represents.
+    #  @param self the instance of the object that is invoking this method
+    #  @retuns a string identifying this postcode type. 
+    @property
+    def postcode_type(self):
+        return self.__class__.PostcodeType
 
 if __name__ == "__main__":
-    #from wintersdeep_postcode import tests
-    print(Postcode.BasicRegex)
+    
+    ##
+    ##  If this class is the main entry point then we should run tests.
+    ##
+
+    from unittest import TextTestRunner, defaultTestLoader
+    from postcode_tests import TestPostcode
+
+    print("Running postcode unit tests...")
+
+    test_runner = TextTestRunner()
+    test_loader_fn = defaultTestLoader.loadTestsFromTestCase
+    unit_tests = test_loader_fn( TestPostcode )
+    test_runner.run( unit_tests )
