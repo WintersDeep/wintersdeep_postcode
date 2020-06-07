@@ -133,7 +133,7 @@ class TestPostcodeParser(TestCase):
 
     ## This test to make sure we throw if we try and create a parser with an unknown
     #  method of handling whitespace in a predicable manner
-    def test__PostcodeParser_parse__with_bad_whitespace_handler(self):
+    def test__PostcodeParser_ctor__with_bad_whitespace_handler(self):
 
         from wintersdeep_postcode.exceptions import ParseError
         self.assertRaises( ValueError, PostcodeParser, 
@@ -298,7 +298,6 @@ class TestPostcodeParser(TestCase):
         self.assertIsNotNone( postcode_parser("AA0 0AA") )
         self.assertIsNotNone( postcode_parser("AA00 0AA") )
         self.assertIsNotNone( postcode_parser("AA0A 0AA") )
-
         
 if __name__ ==  "__main__":
 
