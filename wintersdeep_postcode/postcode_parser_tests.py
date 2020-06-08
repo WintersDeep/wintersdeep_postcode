@@ -19,6 +19,11 @@ from wintersdeep_postcode.postcode_parser import PostcodeParser
 ## Unit Test class for PostcodeParser
 class TestPostcodeParser(TestCase):
 
+    ## test that we throw an error if excess / unrecognised keywords are recevied.
+    def test__PostcodeParser__ctor__excess_keywords(self):
+        self.assertRaises(TypeError, PostcodeParser, unused="value")
+        self.assertRaises(TypeError, PostcodeParser, whitespace="tolerant", unused="value")
+
     ## tests that the PostcodeParser::_get_whitespace_pattern raises an exception when 
     #  unrecognised type strings are provided to the method.
     def test__PostcodeParser_get_whitespace_pattern__unsupported(self):
