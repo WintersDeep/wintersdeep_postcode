@@ -15,8 +15,12 @@ class StandardPostcode(Postcode):
     ## Regular expression pattern expressing the format of the "area" portion of a postcode.
     AreaRegex = r"(?P<area>[A-Z]{1,2})"
 
+    _StandardDistrict = r"(?P<district>[0-9]{1,2})"
+
+    _SubdividedDistrict = r"((?P<district_m>[0-9])(?P<district_n>[A-Z]))"
+
     ## Regular expression pattern expressing the format of the "district" portion of a postcode.
-    DistrictRegex = r"(?P<district>([0-9]{1,2})|([0-9][A-Z]))"
+    DistrictRegex = fr"({_StandardDistrict}|{_SubdividedDistrict})"
 
     ## Regular expression pattern expressing the format of the "sector" portion of a postcode.
     SectorRegex = r"(?P<sector>[0-9])"
@@ -45,6 +49,8 @@ class StandardPostcode(Postcode):
         super().__init__(regex_match)
 
         self.outward_area        = regex_match.group("area")    
-        self.outward_district    = regex_match.group("district")
-        self.inward_sector       = regex_match.group("sector")
+        self.outward_district    = int(regex_match.group("district") or \
+                                        regex_match.group("district_m") )
+        self.outward_subdistrict = regex_match.group("district_n") or ""
+        self.inward_sector       = int(regex_match.group("sector"))
         self.inward_unit         = regex_match.group("unit")
