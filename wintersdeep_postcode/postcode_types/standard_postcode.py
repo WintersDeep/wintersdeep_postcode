@@ -16,7 +16,7 @@ class StandardPostcode(Postcode):
     AreaRegex = r"(?P<area>[A-Z]{1,2})"
 
     ## Regular expression pattern expressing the format of a "normal district" string.
-    StandardDistrict = r"(?P<district>[1-9][0-9]?)"
+    StandardDistrict = r"(?P<district>[0-9]{1,2}?)"
 
     ## Regular expression pattern expressing the format of a "sub-divided district" string.
     SubdividedDistrict = r"((?P<district_m>[0-9])(?P<district_n>[A-Z]))"

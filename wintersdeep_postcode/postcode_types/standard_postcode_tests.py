@@ -178,7 +178,7 @@ if __name__ ==  "__main__":
 
     ##
     ## if this file is the main entry point, run the contained tests.
-    ##
+    ## 
 
     from unittest import main as unit_test_entry_point
     unit_test_entry_point()
