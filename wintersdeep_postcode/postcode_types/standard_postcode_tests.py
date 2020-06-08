@@ -100,6 +100,80 @@ class TestStandardPostcode(TestCase):
         self.assertFalse(test_postcode.is_validated)
         self.assertIs(test_postcode._original_regex_match, regex_match)
 
+    ## Test that the standard postcodes outward code property words as expected.
+    def test__StandardPostcode_outward_code(self):
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+     
+        regex_match = test_regex.match("AB1C 2DE")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.outward_code, "AB1C")
+        
+        regex_match = test_regex.match("AB12 3CD")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.outward_code, "AB12")
+        
+        regex_match = test_regex.match("AB1 2CD")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.outward_code, "AB1")
+        
+        regex_match = test_regex.match("A1B 2CD")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.outward_code, "A1B")
+        
+        regex_match = test_regex.match("A12 3BC")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.outward_code, "A12")
+        
+        regex_match = test_regex.match("A1 2BC")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.outward_code, "A1")
+
+    ## Test that the standard postcodes inward code property words as expected.
+    def test__StandardPostcode_inward_code(self):
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+     
+        regex_match = test_regex.match("AB1C 2DE")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.inward_code, "2DE")
+        
+        regex_match = test_regex.match("AB12 3CD")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.inward_code, "3CD")
+        
+        regex_match = test_regex.match("AB1 2CD")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.inward_code, "2CD")
+        
+        regex_match = test_regex.match("A1B 2CD")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.inward_code, "2CD")
+        
+        regex_match = test_regex.match("A12 3BC")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.inward_code, "3BC")
+        
+        regex_match = test_regex.match("A1 2BC")
+        postcode = StandardPostcode(regex_match)
+        self.assertEqual(postcode.inward_code, "2BC")
+
+    ## Tests the the standard postcode object __str__ method works as expected.
+    def test__StandardPostcode_str(self):
+
+        test_candidates = [ 
+            "AB1C 2DE", "AB12 3CD", "AB1 2CD", "A1B 2CD", "A12 3CD", "A1 2BC"
+        ]
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+        
+        for test_string in test_candidates:
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            self.assertEqual( str(postcode), test_string)
+
+
+
 if __name__ ==  "__main__":
 
     ##

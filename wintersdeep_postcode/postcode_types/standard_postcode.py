@@ -56,3 +56,26 @@ class StandardPostcode(Postcode):
         self.outward_subdistrict = regex_match.group("district_n") or ""
         self.inward_sector       = int(regex_match.group("sector"))
         self.inward_unit         = regex_match.group("unit")
+
+    ## Gets the postcodes outward code.
+    #  @param self the instance of the object that is invoking this method.
+    #  @returns the postcodes outward code as a string.
+    @property
+    def outward_code(self):
+        return  self.outward_area           + \
+                str(self.outward_district)  + \
+                self.outward_subdistrict
+    
+    ## Gets the postcodes inward code.
+    #  @param self the instance of the object that is invoking this method.
+    #  @returns the postcodes outward code as s string.
+    @property
+    def inward_code(self):
+        return  str(self.inward_sector)     + \
+                self.inward_unit
+
+    ## Returns a simple string representation of the object.
+    #  @param self the instance of the object that is invoking this method.
+    #  @returns a string representation of this object suitable for user consumption.
+    def __str__(self):
+        return f"{self.outward_code} {self.inward_code}"   
