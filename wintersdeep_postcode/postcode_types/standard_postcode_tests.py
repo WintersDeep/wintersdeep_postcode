@@ -26,8 +26,8 @@ class TestStandardPostcode(TestCase):
         from re import error
 
         test_A_delimiter = StandardPostcode.GetParseRegex("A")
-        self.assertIsNotNone ( test_A_delimiter.match("E20A2ST") )
-        self.assertIsNone    ( test_A_delimiter.match("E20 2ST") )
+        self.assertIsNotNone ( test_A_delimiter.match("E21A2ST") )
+        self.assertIsNone    ( test_A_delimiter.match("E21 2ST") )
         self.assertIsNone    ( test_A_delimiter.match("WHATEVR") )
         self.assertRaises(error, StandardPostcode.GetParseRegex, '[')
 
@@ -35,12 +35,12 @@ class TestStandardPostcode(TestCase):
     #  appears to able to successfully parse good values, and reject bad ones.
     def test__StandardPostcode_GetParseRegex__regex(self):
         test_regex = StandardPostcode.GetParseRegex(r"\ ")    
-        self.assertIsNotNone( test_regex.match("A0 0AA") )
-        self.assertIsNotNone( test_regex.match("A00 0AA") )
-        self.assertIsNotNone( test_regex.match("A0A 0AA") )
-        self.assertIsNotNone( test_regex.match("AA0 0AA") )
-        self.assertIsNotNone( test_regex.match("AA00 0AA") )
-        self.assertIsNotNone( test_regex.match("AA0A 0AA") )
+        self.assertIsNotNone( test_regex.match("A1 1AA") )
+        self.assertIsNotNone( test_regex.match("A11 1AA") )
+        self.assertIsNotNone( test_regex.match("A1A 1AA") )
+        self.assertIsNotNone( test_regex.match("AA1 1AA") )
+        self.assertIsNotNone( test_regex.match("AA11 1AA") )
+        self.assertIsNotNone( test_regex.match("AA1A 1AA") )
 
     ## tests that the standard postcode object allocates local members as expected.
     def test__StadardPostcode_ctor(self):

@@ -15,12 +15,14 @@ class StandardPostcode(Postcode):
     ## Regular expression pattern expressing the format of the "area" portion of a postcode.
     AreaRegex = r"(?P<area>[A-Z]{1,2})"
 
-    _StandardDistrict = r"(?P<district>[0-9]{1,2})"
+    ## Regular expression pattern expressing the format of a "normal district" string.
+    StandardDistrict = r"(?P<district>[1-9][0-9]?)"
 
-    _SubdividedDistrict = r"((?P<district_m>[0-9])(?P<district_n>[A-Z]))"
+    ## Regular expression pattern expressing the format of a "sub-divided district" string.
+    SubdividedDistrict = r"((?P<district_m>[0-9])(?P<district_n>[A-Z]))"
 
     ## Regular expression pattern expressing the format of the "district" portion of a postcode.
-    DistrictRegex = fr"({_StandardDistrict}|{_SubdividedDistrict})"
+    DistrictRegex = fr"({StandardDistrict}|{SubdividedDistrict})"
 
     ## Regular expression pattern expressing the format of the "sector" portion of a postcode.
     SectorRegex = r"(?P<sector>[0-9])"
