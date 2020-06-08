@@ -1,3 +1,6 @@
+# python3 imports
+from gettext import gettext as _
+
 ## Postcode Parsing error
 #  Raised when a value passed to PostCode parser object cannot be parsed.
 class ParseError(ValueError):
@@ -7,7 +10,7 @@ class ParseError(ValueError):
     #  @param input_string the string that could not be parsed.
     #  @param parser a reference to the parser that raised this exception.
     def __init__(self, input_string, parser):
-        super().__init__( fr"Invalid postcode structure '{input_string}'." )
+        super().__init__( _(fr"Invalid postcode structure '%s'.") % input_string )
         self.source_input = input_string
         self.source_parser = parser
 
