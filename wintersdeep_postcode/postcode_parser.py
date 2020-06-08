@@ -1,11 +1,3 @@
-# https://en.m.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom
-# The structure of a postcode is two alphanumeric codes, the first having between two 
-# and four characters and the second, three characters. First, one or two letters 
-# indicate the postcode area, followed by one or two digits signifying a district 
-# within that area. This is followed by a space and then a number denoting a sector 
-# within said district, and finally by two letters which are allocated to streets or 
-# sides of a street.
-
 # python3 imports
 from re import compile
 
