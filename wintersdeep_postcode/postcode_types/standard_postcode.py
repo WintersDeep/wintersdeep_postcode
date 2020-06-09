@@ -1,8 +1,10 @@
 # python3 imports
 from re import compile as compile_regex
+from gettext import gettext as _
 
 # project imports
 from wintersdeep_postcode.postcode import Postcode
+from wintersdeep_postcode.exceptions.validation_fault import ValidationFault
 
 ## A standard UK postcode.
 #  @remarks this represents standard UK domestic/commercial postcode 
@@ -30,6 +32,29 @@ class StandardPostcode(Postcode):
     ## Regular expression pattern expressing the format of the "subsector" portion of a postcode.
     UnitRegex = r"(?P<unit>[A-Z]{2})"
 
+    ## Areas that only have single digit districts (ignoring sub-divisions)
+    AreasWithOnlySingleDigitDistricts = [ 
+        "BR", "FY", "HA", "HD", "HG", "HR", "HS", "HX",
+        "JE", "LD", "SM", "SR", "WC", "WN", "ZE" 
+    ]
+
+    ## Areas that only have double digit districts (ignoring sub-divisions)
+    AreasWithOnlyDoubleDigitDistricts = [
+        "AB", "LL", "SO"
+    ]
+
+    ## The base number from which validation faults in this class start
+    #  @remarks each class has 100 numbers allocated to it; SimplePostcode - 200 -> 299
+    ValidationFaultBase = 200
+
+    ## Validation fault for when a postcode in an area with only single digit districts cites a 2-digit one.
+    ExpectedSingleDigitDistrict = ValidationFault( ValidationFaultBase + 1, 
+        _("Postcodes in this area are expected to only have single digit districts.") )
+
+    ## Validation fault for when a postcode in an area with only double digit districts cites a 1-digit one.
+    ExpectedDoubleDigitDistrict = ValidationFault( ValidationFaultBase + 2, 
+        _("Postcodes in this area are expected to only have double digit districts.") )
+    
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
     #  @returns a compiled regular expression that can be used to parse a regeex of this type. 
@@ -42,6 +67,35 @@ class StandardPostcode(Postcode):
             StandardPostcode.SectorRegex, 
             StandardPostcode.UnitRegex
         )
+
+    ## Determine if the given postcode appears to be valid.
+    #  @param cls the class that is invoking this method.
+    #  @param postcode the postcode to be checked.
+    #  @throws ValidationError if the postcode does not validate.
+    @classmethod
+    def Validate(cls, postcode):
+
+        validation_faults = []
+
+        # some areas only have single/double digit districts - we check the district first in this case
+        # so we only have to perform the appropriate test.
+        if postcode.outward_district <= 9:
+            if postcode.outward_area in StandardPostcode.AreasWithOnlyDoubleDigitDistricts:
+                validation_faults.append(StandardPostcode.ExpectedDoubleDigitDistrict)
+        else: 
+            if postcode.outward_area in StandardPostcode.AreasWithOnlySingleDigitDistricts:
+                validation_faults.append(StandardPostcode.ExpectedSingleDigitDistrict)
+
+        # if any faults were detected, raise a validation error.
+        if( len(validation_faults) > 0 ):
+            from wintersdeep_postcode.exceptions import ValidationError
+            faults_map = { int(f): str(f) for f in validation_faults }
+            raise ValidationError(postcode, faults_map)
+
+        # set the validated flag on the postcode.
+        postcode.is_validated = True
+
+
 
     ## Creates a new instance of the standard postcode object.
     #  @param self the instance of the object that is invoking this method,

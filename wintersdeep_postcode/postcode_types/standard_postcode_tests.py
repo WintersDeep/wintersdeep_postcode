@@ -172,7 +172,72 @@ class TestStandardPostcode(TestCase):
             postcode = StandardPostcode(regex_match)
             self.assertEqual( str(postcode), test_string)
 
+    ## Wikipedia: Areas with only single-digit districts: BR, FY, HA, HD, HG, HR, HS, HX, JE
+    #  LD, SM, SR, WC, WN, ZE. Tests that standard postcode observes these rules.
+    def test__StandardPostcode_Validate__single_digit_districts(self):
 
+        from wintersdeep_postcode.exceptions.validation_error import ValidationError
+
+        # we are only going to test the failure route in this test, as good postcodes are to be 
+        # covered in another test and should cover this scenario.
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+        test_raises_fault = [ "BR", "FY", "HA", "HD", "HG", "HR", "HS", 
+            "HX", "JE", "LD", "SM", "SR", "WC", "WN", "ZE" ]
+
+        expected_error = int(StandardPostcode.ExpectedSingleDigitDistrict)
+        self.assertEqual(expected_error, 201)
+
+        for test in test_raises_fault:
+
+            test_string = fr"{test}9 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            StandardPostcode.Validate(postcode)
+
+            test_string = fr"{test}10 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            
+            try:
+                StandardPostcode.Validate(postcode)
+                self.fail(f"{test_string} is in area {test} and should only allow single digit districts.")
+            except ValidationError as ex:
+                self.assertTrue( expected_error in ex.faults )
+                self.assertEqual( len(ex.faults), 1 )
+
+    ## Wikipedia: Areas with only double-digit districts: AB, LL, SO. Tests that standard postcode 
+    #  observes this rules.
+    def test__StandardPostcode_Validate__double_digit_districts(self):
+
+        from wintersdeep_postcode.exceptions.validation_error import ValidationError
+
+        # we are only going to test the failure route in this test, as good postcodes are to be 
+        # covered in another test and should cover this scenario.
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+        test_raises_fault = [ "AB", "LL", "SO" ]
+
+        expected_error = int(StandardPostcode.ExpectedDoubleDigitDistrict)
+        self.assertEqual(expected_error, 202)
+
+        for test in test_raises_fault:
+
+            test_string = fr"{test}10 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            StandardPostcode.Validate(postcode)
+
+            test_string = fr"{test}9 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            
+            try:
+                StandardPostcode.Validate(postcode)
+                self.fail(f"{test_string} is in area {test} and should only allow double digit districts.")
+            except ValidationError as ex:
+                self.assertTrue( expected_error in ex.faults )
+                self.assertEqual( len(ex.faults), 1 )
 
 if __name__ ==  "__main__":
 

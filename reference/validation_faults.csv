@@ -1,0 +1,11 @@
+fault_id, postcode_type, fault_overview, allocated_in_file
+
+# 0-99: Internal and Testing Use
+1, 'reserved', 'used for internal testing pursposes', 'exceptions/validation_fault_test.py'
+2, 'reserved', 'used for internal testing pursposes', 'exceptions/validation_fault_test.py'
+
+# 100-199: Generic Postcode Faults
+
+# 200-299: Standard Postcode
+201, 'standard', 'area expects only single digit districts', 'postcode_types/stndard_postcode.py'
+202, 'standard', 'area expects only double digit districts', 'postcode_types/stndard_postcode.py'

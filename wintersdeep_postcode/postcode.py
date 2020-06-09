@@ -18,7 +18,17 @@ class Postcode(object):
         return compile_regex( "".join(
             [ r'^' ] + [ *args ] + [ r'$' ]
         ))
-        
+
+    ## Given a postcode, should validate it conforms to any rules.
+    #  Raises an error when an implementor forgets to implement this function.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode the postcode that should be validated.
+    #  @throws ValidationError if the postcode does not validate.
+    @classmethod
+    def Validate(cls, postcode):
+        invoking_class = cls.__name__
+        raise NotImplementedError(f"{invoking_class} does not implement validate; cannot validate '{postcode}'.")
+
     ## Creates a new instance of the postcode class.
     #  @param self the instance of the object that is invoking this method.
     #  @param regex_match the regular expression that triggered building this object.
