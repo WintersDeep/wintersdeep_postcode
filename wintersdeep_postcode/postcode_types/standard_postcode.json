@@ -1,0 +1,46 @@
+{
+    "single-digit-districts": [
+        "BR", "FY", "HA", "HD", "HG",
+        "HR", "HS", "HX", "JE", "LD",
+        "SM", "SR", "WC", "WN", "ZE"
+    ],
+    "double-digit-districts": [
+        "AB", "LL", "SO"
+    ],
+    "has-zero-district": [
+        "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
+    ],
+    "no-ten-district": [
+        "BL", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
+    ],
+    "subdivided-districts":
+    {
+        "EC": { "1": null, "2": null, "3": null, "4": null },
+        "SW": { "1": null },
+        "W":
+        {
+            "1": null
+        },
+        "WC":
+        {
+            "1": null,
+            "2": null
+        },
+        "E":
+        {
+            "1": [ "W" ]
+        },
+        "N":
+        {
+            "1": [ "C", "P" ]
+        },
+        "NW":
+        {
+            "1": [ "W"]
+        },
+        "SE":
+        {
+            "1": [ "P" ]
+        }
+    }
+}

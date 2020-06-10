@@ -33,37 +33,21 @@ class StandardPostcode(Postcode):
     UnitRegex = r"(?P<unit>[A-Z]{2})"
 
     ## Areas that only have single digit districts (ignoring sub-divisions)
-    AreasWithOnlySingleDigitDistricts = [ 
-        "BR", "FY", "HA", "HD", "HG", "HR", "HS", "HX",
-        "JE", "LD", "SM", "SR", "WC", "WN", "ZE" 
-    ]
+    #  @remarks loaded from JSON file 'standard_postcode.json'
+    AreasWithOnlySingleDigitDistricts = []
 
     ## Areas that only have double digit districts (ignoring sub-divisions)
-    AreasWithOnlyDoubleDigitDistricts = [
-        "AB", "LL", "SO"
-    ]
+    #  @remarks loaded from JSON file 'standard_postcode.json'
+    AreasWithOnlyDoubleDigitDistricts = []
 
     ## Areas that have a zero district.
-    AreasWithAZeroDistrict = [ 
-        "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
-    ]
+    AreasWithAZeroDistrict = []
 
     ## Areas that do not have a district 10
-    AreasWithNoDistrictTen = [
-        "BL", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
-    ]
+    AreasWithNoDistrictTen = []
 
     ## Only a few areas have subdivided districts
-    DistrictsWithSubdivision = {
-        "WC": [1, 2],
-        "EC": [1, 2, 3, 4],
-        "NW": [1],
-        "SE": [1],
-        "SW": [1],
-        "E": [1],
-        "N": [1],
-        "W": [1]
-    }
+    DistrictsWithSubdivision = {}
 
     ## The base number from which validation faults in this class start
     #  @remarks each class has 100 numbers allocated to it; SimplePostcode - 200 -> 299
@@ -175,4 +159,29 @@ class StandardPostcode(Postcode):
     #  @param self the instance of the object that is invoking this method.
     #  @returns a string representation of this object suitable for user consumption.
     def __str__(self):
-        return f"{self.outward_code} {self.inward_code}"   
+        return f"{self.outward_code} {self.inward_code}"
+
+
+## Loads various static members used for validation of standard JSON postcodes from
+#  a JSON file - this is expected to be the one that is co-located with this class.
+def load_standard_postcode_static_variables_from_json():
+    
+    from json import load
+    from os.path import dirname, join
+    
+    json_configuration_file = join( dirname(__file__), "standard_postcode.json" )
+    
+    with open(json_configuration_file, 'r') as file_handle:
+        config_json = load(file_handle)
+
+    StandardPostcode.AreasWithOnlySingleDigitDistricts = config_json['single-digit-districts']
+    StandardPostcode.AreasWithOnlyDoubleDigitDistricts = config_json['double-digit-districts']
+    StandardPostcode.AreasWithAZeroDistrict = config_json['has-zero-district']
+    StandardPostcode.AreasWithNoDistrictTen = config_json['no-ten-district']
+
+    StandardPostcode.DistrictsWithSubdivision = {  k:{
+        int(k1):v1 for k1,v1 in v.items()
+    } for k,v in config_json["subdivided-districts"].items() }
+
+
+load_standard_postcode_static_variables_from_json()
