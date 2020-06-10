@@ -287,6 +287,35 @@ class TestStandardPostcode(TestCase):
             faults = StandardPostcode.Validate(postcode)
             self.assertTrue( test_error in faults, test)
 
+    ## Wikipedia: Areas with subdivided districts: EC1-4, SW1, W1, WC1, WC2, E1, 
+    #  N1, NW, and SE. Tests that standard postcode observes this rules.
+    def test__StandardPostcode_Validate__no_subdistrict(self):
+
+        from wintersdeep_postcode.exceptions.validation_error import ValidationError
+
+        # we are only going to test the failure route in this test, as good postcodes are to be 
+        # covered in another test and should cover this scenario.
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+        test_raises_fault = [ "A", "B", "C", "FY", "HA", "PR", "SL", "SS" ]
+        
+        test_error = StandardPostcode.UnexpectedDistrictSubdivision
+        self.assertEqual(int(test_error), 205)
+
+        for test in test_raises_fault:
+
+            test_string = fr"{test}5A 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            faults = StandardPostcode.Validate(postcode)
+            self.assertTrue( test_error in faults, test)
+
+        test_string = fr"WC1A 1AB"
+        regex_match = test_regex.match(test_string)
+        postcode = StandardPostcode(regex_match)
+        faults = StandardPostcode.Validate(postcode)
+        self.assertFalse( faults )
+
 
 if __name__ ==  "__main__":
 

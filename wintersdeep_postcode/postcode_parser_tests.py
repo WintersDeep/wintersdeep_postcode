@@ -141,7 +141,7 @@ class TestPostcodeParser(TestCase):
     def test__PostcodeParser_parse__with_no_translation(self):
 
         from wintersdeep_postcode.exceptions import ParseError
-        postcode_parser = PostcodeParser(trim_whitespace=False, force_case=False, whitespace='strict')
+        postcode_parser = PostcodeParser(trim_whitespace=False, force_case=False, whitespace='strict', validate=False)
         
         self.assertRaises(ParseError, postcode_parser, "aa1 1aa")
         self.assertRaises(ParseError, postcode_parser, "AA11AA")
@@ -167,7 +167,7 @@ class TestPostcodeParser(TestCase):
     def test__PostcodeParser_parse__with_caps_correction(self):
 
         from wintersdeep_postcode.exceptions import ParseError
-        postcode_parser = PostcodeParser(trim_whitespace=False, force_case=True, whitespace='strict')
+        postcode_parser = PostcodeParser(trim_whitespace=False, force_case=True, whitespace='strict', validate=False)
         
         self.assertIsNotNone( postcode_parser("aa1 1aa") )
         self.assertRaises(ParseError, postcode_parser, "AA11AA")
@@ -193,7 +193,7 @@ class TestPostcodeParser(TestCase):
     def test__PostcodeParser_parse__with_trimmed_whitespace(self):
 
         from wintersdeep_postcode.exceptions import ParseError
-        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=False, whitespace='strict')
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=False, whitespace='strict', validate=False)
         
         self.assertRaises(ParseError, postcode_parser, "aa1 1aa")
         self.assertRaises(ParseError, postcode_parser, "AA11AA")
@@ -219,7 +219,7 @@ class TestPostcodeParser(TestCase):
     def test__PostcodeParser_parse__with_full_translation(self):
 
         from wintersdeep_postcode.exceptions import ParseError
-        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='strict')
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='strict', validate=False)
         
         self.assertIsNotNone( postcode_parser("aa1 1aa") )
         self.assertRaises(ParseError, postcode_parser, "AA11AA")
@@ -245,7 +245,7 @@ class TestPostcodeParser(TestCase):
     def test__PostcodeParser_parse__tolerant(self):
 
         from wintersdeep_postcode.exceptions import ParseError
-        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='tolerant')
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='tolerant', validate=False)
         
         self.assertIsNotNone( postcode_parser("aa1 1aa") )
         self.assertIsNotNone( postcode_parser("AA11AA") )
@@ -271,7 +271,7 @@ class TestPostcodeParser(TestCase):
     def test__PostcodeParser_parse__lenient(self):
 
         from wintersdeep_postcode.exceptions import ParseError
-        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='lenient')
+        postcode_parser = PostcodeParser(trim_whitespace=True, force_case=True, whitespace='lenient', validate=False)
         
         self.assertIsNotNone( postcode_parser("aa1 1aa") )
         self.assertIsNotNone( postcode_parser("AA11AA") )
