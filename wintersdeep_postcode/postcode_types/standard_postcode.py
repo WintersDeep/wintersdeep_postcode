@@ -43,6 +43,11 @@ class StandardPostcode(Postcode):
         "AB", "LL", "SO"
     ]
 
+    ## Areas that have a zero district.
+    AreasWithAZeroDistrict = [ 
+        "BL", "BS", "CM", "CR", "FY", "HA","PR", "SL", "SS"
+    ]
+
     ## The base number from which validation faults in this class start
     #  @remarks each class has 100 numbers allocated to it; SimplePostcode - 200 -> 299
     ValidationFaultBase = 200
@@ -54,6 +59,10 @@ class StandardPostcode(Postcode):
     ## Validation fault for when a postcode in an area with only double digit districts cites a 1-digit one.
     ExpectedDoubleDigitDistrict = ValidationFault( ValidationFaultBase + 2, 
         _("Postcodes in this area are expected to only have double digit districts.") )
+
+    ## Validation fault for when a postcode has a zero district, but the area is not known to have this.
+    NoZeroDistrict = ValidationFault( ValidationFaultBase + 3,
+        _("Postcodes in this area are not known to have a district zero."))
     
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
@@ -85,6 +94,11 @@ class StandardPostcode(Postcode):
         else: 
             if postcode.outward_area in StandardPostcode.AreasWithOnlySingleDigitDistricts:
                 validation_faults.append(StandardPostcode.ExpectedSingleDigitDistrict)
+
+        ## only some areas are known to have a district zero...
+        if postcode.outward_district == 0:
+            if not postcode.outward_area in StandardPostcode.AreasWithAZeroDistrict:
+                validation_faults.append(StandardPostcode.NoZeroDistrict)
 
         return validation_faults
 

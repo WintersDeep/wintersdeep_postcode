@@ -233,6 +233,42 @@ class TestStandardPostcode(TestCase):
             self.assertTrue( expected_error in faults )
             self.assertEqual( len(faults), 1 )
 
+    ## Wikipedia: Areas with a zero districts: BL, BS, CM, CR, FY, HA, PR, SL, SS. Tests 
+    #  that standard postcode observes this rules.
+    def test__StandardPostcode_Validate__no_zero_district(self):
+
+        from wintersdeep_postcode.exceptions.validation_error import ValidationError
+
+        # we are only going to test the failure route in this test, as good postcodes are to be 
+        # covered in another test and should cover this scenario.
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+        test_not_raises_fault = [ "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS" ]
+        test_raises_fault = [ "BR", "WC", "SM", "SR" ]
+
+        test_error = StandardPostcode.NoZeroDistrict
+        self.assertEqual(int(test_error), 203)
+
+        for test in test_not_raises_fault:
+
+            test_string = fr"{test}0 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            faults = StandardPostcode.Validate(postcode)
+            self.assertFalse(faults)
+
+        for test in test_raises_fault:
+
+            test_string = fr"{test}0 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            faults = StandardPostcode.Validate(postcode)
+            self.assertTrue( test_error in faults )
+            self.assertEqual( len(faults), 1 )
+
+
+
+
 if __name__ ==  "__main__":
 
     ##
