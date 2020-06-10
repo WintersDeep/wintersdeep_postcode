@@ -5,6 +5,7 @@ from gettext import gettext as _
 # project imports
 from wintersdeep_postcode.postcode import Postcode
 from wintersdeep_postcode.exceptions.validation_fault import ValidationFault
+from wintersdeep_postcode.postcode_types.standard_postcode_validator import StandardPostcodeValidator
 
 ## A standard UK postcode.
 #  @remarks this represents standard UK domestic/commercial postcode 
@@ -31,23 +32,6 @@ class StandardPostcode(Postcode):
 
     ## Regular expression pattern expressing the format of the "subsector" portion of a postcode.
     UnitRegex = r"(?P<unit>[A-Z]{2})"
-
-    ## Areas that only have single digit districts (ignoring sub-divisions)
-    #  @remarks loaded from JSON file 'standard_postcode.json'
-    AreasWithOnlySingleDigitDistricts = []
-
-    ## Areas that only have double digit districts (ignoring sub-divisions)
-    #  @remarks loaded from JSON file 'standard_postcode.json'
-    AreasWithOnlyDoubleDigitDistricts = []
-
-    ## Areas that have a zero district.
-    AreasWithAZeroDistrict = []
-
-    ## Areas that do not have a district 10
-    AreasWithNoDistrictTen = []
-
-    ## Only a few areas have subdivided districts
-    DistrictsWithSubdivision = {}
 
     ## The base number from which validation faults in this class start
     #  @remarks each class has 100 numbers allocated to it; SimplePostcode - 200 -> 299
@@ -97,45 +81,19 @@ class StandardPostcode(Postcode):
     @classmethod
     def Validate(cls, postcode):
 
-        validation_faults = []
+        f = StandardPostcode
+        v = StandardPostcodeValidator
 
-        # some areas only have single/double digit districts - we check the district first in this case
-        # so we only have to perform the appropriate test.
-        if postcode.outward_district <= 9:
-            if postcode.outward_area in StandardPostcode.AreasWithOnlyDoubleDigitDistricts:
-                validation_faults.append(StandardPostcode.ExpectedDoubleDigitDistrict)
-        else: 
-            if postcode.outward_area in StandardPostcode.AreasWithOnlySingleDigitDistricts:
-                validation_faults.append(StandardPostcode.ExpectedSingleDigitDistrict)
+        validation_steps = [
+            (f.ExpectedSingleDigitDistrict,     v.CheckAreasWithOnlySingleDigitDistricts),
+            (f.ExpectedDoubleDigitDistrict,     v.CheckAreasWithOnlyDoubleDigitDistricts),
+            (f.NoZeroDistrict,                  v.CheckAreasWithDistrictZero),
+            (f.NoTenDistrict,                   v.CheckAreasWithoutDistrictTen),
+            (f.SubdistrictsUnsupported,         v.CheckAreasWithSubdistricts),
+            (f.UnexpectedDistrictSubdivision,   v.CheckAreasWithSpecificSubdistricts)
+        ]
 
-        # only some areas are known to have a district zero...
-        if postcode.outward_district == 0:
-            if not postcode.outward_area in StandardPostcode.AreasWithAZeroDistrict:
-                validation_faults.append(StandardPostcode.NoZeroDistrict)
-        elif postcode.outward_district == 10:
-            if postcode.outward_area in StandardPostcode.AreasWithNoDistrictTen:
-                validation_faults.append(StandardPostcode.NoTenDistrict)
-
-        # only a handful of postcode areas have subdistricts
-        if postcode.outward_subdistrict:
-            areas_with_subdistricts = StandardPostcode.DistrictsWithSubdivision
-            if postcode.outward_area in areas_with_subdistricts:
-                districts_with_divisions = areas_with_subdistricts[postcode.outward_area]
-                if districts_with_divisions:
-                    if postcode.outward_district in districts_with_divisions:
-                        allowed_divisions = districts_with_divisions[postcode.outward_district]
-                        if allowed_divisions:
-                            if not postcode.outward_subdistrict in allowed_divisions:
-                                validation_faults.append(StandardPostcode.UnexpectedDistrictSubdivision)
-                    else:
-                        # the district specified isn't in the map of districts that have divisions
-                        validation_faults.append(StandardPostcode.SubdistrictsUnsupported)
-            else:
-                # the postcode is in an area not known to have sub-districting
-                validation_faults.append(StandardPostcode.SubdistrictsUnsupported)
-                
-
-        return validation_faults
+        return [ fault for fault, check in validation_steps if check(postcode) ]
 
     ## Creates a new instance of the standard postcode object.
     #  @param self the instance of the object that is invoking this method,
@@ -173,29 +131,3 @@ class StandardPostcode(Postcode):
     #  @returns a string representation of this object suitable for user consumption.
     def __str__(self):
         return f"{self.outward_code} {self.inward_code}"
-
-
-## Loads various static members used for validation of standard JSON postcodes from
-#  a JSON file - this is expected to be the one that is co-located with this class.
-def load_standard_postcode_static_variables_from_json():
-    
-    from json import load
-    from os.path import dirname, join
-    
-    json_configuration_file = join( dirname(__file__), "standard_postcode.json" )
-    
-    with open(json_configuration_file, 'r') as file_handle:
-        config_json = load(file_handle)
-
-    StandardPostcode.AreasWithOnlySingleDigitDistricts = config_json['single-digit-districts']
-    StandardPostcode.AreasWithOnlyDoubleDigitDistricts = config_json['double-digit-districts']
-    StandardPostcode.AreasWithAZeroDistrict = config_json['has-zero-district']
-    StandardPostcode.AreasWithNoDistrictTen = config_json['no-ten-district']
-
-    subdivision_map = config_json["subdivided-districts"]
-    StandardPostcode.DistrictsWithSubdivision = {  k: { 
-        int(k1): v1 for k1, v1 in v.items()
-    } for k, v in subdivision_map.items() }
-
-
-load_standard_postcode_static_variables_from_json()

@@ -7,10 +7,10 @@
     "double-digit-districts": [
         "AB", "LL", "SO"
     ],
-    "has-zero-district": [
+    "has-district-zero": [
         "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
     ],
-    "no-ten-district": [
+    "no-district-ten": [
         "BL", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
     ],
     "subdivided-districts":
