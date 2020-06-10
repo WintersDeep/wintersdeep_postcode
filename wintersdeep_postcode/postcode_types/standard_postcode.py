@@ -70,8 +70,12 @@ class StandardPostcode(Postcode):
         _("Postcodes in this area are not known to have a district ten."))
     
     ## Validation fault for when a postcode has a 10 district, but the area is not known to have this.
-    UnexpectedDistrictSubdivision = ValidationFault( ValidationFaultBase + 5,
-        _("Postcodes in this area are not known to have district subdivision."))
+    SubdistrictsUnsupported = ValidationFault( ValidationFaultBase + 5,
+        _("Postcodes in this area/district are not known to have subdivisions."))
+    
+    ## Validation fault when the postcode supports subdivisions, but no the one used.
+    UnexpectedDistrictSubdivision = ValidationFault( ValidationFaultBase + 6, 
+        _("Postcodes in this area/district have one or more sub-districts, but not the one used."))
 
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
@@ -114,13 +118,22 @@ class StandardPostcode(Postcode):
 
         # only a handful of postcode areas have subdistricts
         if postcode.outward_subdistrict:
-            subdivided_districts = StandardPostcode.DistrictsWithSubdivision
-            validation_fault = not postcode.outward_area in subdivided_districts 
-            if not validation_fault:
-                districts = subdivided_districts[postcode.outward_area]
-                validation_fault = not postcode.outward_district in districts
-            if validation_fault:
-                validation_faults.append(StandardPostcode.UnexpectedDistrictSubdivision)
+            areas_with_subdistricts = StandardPostcode.DistrictsWithSubdivision
+            if postcode.outward_area in areas_with_subdistricts:
+                districts_with_divisions = areas_with_subdistricts[postcode.outward_area]
+                if districts_with_divisions:
+                    if postcode.outward_district in districts_with_divisions:
+                        allowed_divisions = districts_with_divisions[postcode.outward_district]
+                        if allowed_divisions:
+                            if not postcode.outward_subdistrict in allowed_divisions:
+                                validation_faults.append(StandardPostcode.UnexpectedDistrictSubdivision)
+                    else:
+                        # the district specified isn't in the map of districts that have divisions
+                        validation_faults.append(StandardPostcode.SubdistrictsUnsupported)
+            else:
+                # the postcode is in an area not known to have sub-districting
+                validation_faults.append(StandardPostcode.SubdistrictsUnsupported)
+                
 
         return validation_faults
 
@@ -179,9 +192,10 @@ def load_standard_postcode_static_variables_from_json():
     StandardPostcode.AreasWithAZeroDistrict = config_json['has-zero-district']
     StandardPostcode.AreasWithNoDistrictTen = config_json['no-ten-district']
 
-    StandardPostcode.DistrictsWithSubdivision = {  k:{
-        int(k1):v1 for k1,v1 in v.items()
-    } for k,v in config_json["subdivided-districts"].items() }
+    subdivision_map = config_json["subdivided-districts"]
+    StandardPostcode.DistrictsWithSubdivision = {  k: { 
+        int(k1): v1 for k1, v1 in v.items()
+    } for k, v in subdivision_map.items() }
 
 
 load_standard_postcode_static_variables_from_json()

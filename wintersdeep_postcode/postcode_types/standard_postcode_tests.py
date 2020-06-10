@@ -297,9 +297,9 @@ class TestStandardPostcode(TestCase):
         # covered in another test and should cover this scenario.
 
         test_regex = StandardPostcode.GetParseRegex(r"\ ")    
-        test_raises_fault = [ "A", "B", "C", "FY", "HA", "PR", "SL", "SS" ]
+        test_raises_fault = [ "A", "B", "C", "FY", "HA", "PR", "SL", "SS", "WC" ]
         
-        test_error = StandardPostcode.UnexpectedDistrictSubdivision
+        test_error = StandardPostcode.SubdistrictsUnsupported
         self.assertEqual(int(test_error), 205)
 
         for test in test_raises_fault:
@@ -314,7 +314,31 @@ class TestStandardPostcode(TestCase):
         regex_match = test_regex.match(test_string)
         postcode = StandardPostcode(regex_match)
         faults = StandardPostcode.Validate(postcode)
+        self.assertFalse( faults, [ str(f) for f in faults ] )
+
+    ## Tests that where we know about specific subdistricts the parser will only allow
+    #  elements from the selection.
+    def test__StadardPostcode_Validate__specific_subdistricts(self):
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+
+        test_error = StandardPostcode.UnexpectedDistrictSubdivision
+        self.assertEqual( int(test_error), 206)
+
+        regex_match = test_regex.match("N1C 9XX")
+        postcode = StandardPostcode(regex_match)
+        faults = StandardPostcode.Validate(postcode)
         self.assertFalse( faults )
+
+        regex_match = test_regex.match("N1P 9XX")
+        postcode = StandardPostcode(regex_match)
+        faults = StandardPostcode.Validate(postcode)
+        self.assertFalse( faults )
+
+        regex_match = test_regex.match("N1R 9XX")
+        postcode = StandardPostcode(regex_match)
+        faults = StandardPostcode.Validate(postcode)
+        self.assertTrue( test_error in faults )
+
 
 
 if __name__ ==  "__main__":
