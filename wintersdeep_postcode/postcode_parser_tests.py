@@ -20,7 +20,7 @@ from wintersdeep_postcode.postcode_parser import PostcodeParser
 class TestPostcodeParser(TestCase):
 
     ## test that we throw an error if excess / unrecognised keywords are recevied.
-    def test__PostcodeParser__ctor__excess_keywords(self):
+    def test__PostcodeParser_ctor_excess_keywords(self):
         self.assertRaises(TypeError, PostcodeParser, unused="value")
         self.assertRaises(TypeError, PostcodeParser, whitespace="tolerant", unused="value")
 
@@ -329,7 +329,75 @@ class TestPostcodeParser(TestCase):
         # make sure it appears we loaded all types (basic count check only)
         self.assertEqual( len(parser_list), 1 )
         self.assertIs( parser_list[0][1], test_type)
+
+    ## tests that the postcode parser respects the validate keyword argument
+    def test__PostcodeParser_ctor__validate_keyword(self):
         
+        from wintersdeep_postcode.postcode_types import StandardPostcode
+        from wintersdeep_postcode.exceptions import ParseError, ValidationError
+
+        # one postcode to check that validation errors are thrown, and another for parser errors
+        postcode_invalid = "LL9 2XX"
+        postcode_valid = "LL20 2XX"
+        postcode_malformed = "LL20 XXX"
+
+        postcode_parser = PostcodeParser(validate=True)
+        self.assertRaises(ParseError, postcode_parser.parse, postcode_malformed)
+        self.assertRaises(ValidationError, postcode_parser.parse, postcode_invalid)
+
+        postcode = postcode_parser.parse(postcode_valid)
+        self.assertIsInstance(postcode, StandardPostcode)
+        self.assertFalse(postcode.validation_faults)
+        self.assertTrue(postcode.is_validated)
+
+        postcode_parser = PostcodeParser(validate=False)
+        self.assertRaises(ParseError, postcode_parser.parse, postcode_malformed)
+
+        postcode = postcode_parser.parse(postcode_invalid)
+        self.assertIsInstance(postcode, StandardPostcode)
+        self.assertFalse(postcode.validation_faults)
+        self.assertFalse(postcode.is_validated)
+
+    ## tests that the ignore faults keyword allows people to mask postcode faults they
+    # wish to supress (future troubleshooting, errors, or to be more forgiving)
+    def test__PostcodeParser_ctor__ignore_faults(self):
+        
+        from wintersdeep_postcode.postcode_types import StandardPostcode
+        from wintersdeep_postcode.exceptions import ParseError, ValidationError
+
+        # one postcode to check that validation errors are thrown, and another for parser errors
+        postcode_invalid_but_ignored = "LL9 2XX"
+        postcode_invalid_not_ignored = "HX10 2XX"
+        postcode_valid = "LL20 2XX"
+        postcode_malformed = "LL20 XXX"
+
+        supress_error = StandardPostcode.ExpectedDoubleDigitDistrict
+        
+        for test_error in [ supress_error, int(supress_error) ]:
+
+            postcode_parser = PostcodeParser(validate=True, ignored_faults=[ test_error ])
+
+            self.assertRaises(ParseError, postcode_parser.parse, postcode_malformed)
+
+            postcode = postcode_parser.parse(postcode_valid)
+            self.assertIsInstance(postcode, StandardPostcode)
+            self.assertFalse(postcode.validation_faults)
+            self.assertTrue(postcode.is_validated)
+
+            postcode = postcode_parser.parse(postcode_invalid_but_ignored)
+            self.assertIsInstance(postcode, StandardPostcode)
+            self.assertEqual( len(postcode.validation_faults), 1)
+            self.assertTrue(postcode.is_validated)
+            
+            try:
+                postcode_parser.parse(postcode_invalid_not_ignored)
+                self.fail(f"Parsing '{postcode_invalid_not_ignored}' was expected to trigger an exception.")
+            except ValidationError as ex:
+                self.assertTrue( int(StandardPostcode.ExpectedSingleDigitDistrict) in ex.postcode.validation_faults)
+                self.assertEqual( len(ex.postcode.validation_faults), 1)
+                self.assertFalse(ex.postcode.is_validated)
+            
+
 if __name__ ==  "__main__":
 
     ##

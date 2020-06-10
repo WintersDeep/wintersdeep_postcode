@@ -71,7 +71,7 @@ class StandardPostcode(Postcode):
     ## Determine if the given postcode appears to be valid.
     #  @param cls the class that is invoking this method.
     #  @param postcode the postcode to be checked.
-    #  @throws ValidationError if the postcode does not validate.
+    #  @returns a list of validation fault objects describing any problems with the postcode.
     @classmethod
     def Validate(cls, postcode):
 
@@ -86,16 +86,7 @@ class StandardPostcode(Postcode):
             if postcode.outward_area in StandardPostcode.AreasWithOnlySingleDigitDistricts:
                 validation_faults.append(StandardPostcode.ExpectedSingleDigitDistrict)
 
-        # if any faults were detected, raise a validation error.
-        if( len(validation_faults) > 0 ):
-            from wintersdeep_postcode.exceptions import ValidationError
-            faults_map = { int(f): str(f) for f in validation_faults }
-            raise ValidationError(postcode, faults_map)
-
-        # set the validated flag on the postcode.
-        postcode.is_validated = True
-
-
+        return validation_faults
 
     ## Creates a new instance of the standard postcode object.
     #  @param self the instance of the object that is invoking this method,

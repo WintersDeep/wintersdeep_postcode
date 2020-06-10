@@ -23,7 +23,7 @@ class Postcode(object):
     #  Raises an error when an implementor forgets to implement this function.
     #  @param cls the type of class that is invoking this method.
     #  @param postcode the postcode that should be validated.
-    #  @throws ValidationError if the postcode does not validate.
+    #  @returns a list of validation faults observed with the postcode.
     @classmethod
     def Validate(cls, postcode):
         invoking_class = cls.__name__
@@ -34,6 +34,7 @@ class Postcode(object):
     #  @param regex_match the regular expression that triggered building this object.
     def __init__(self, regex_match):
         self._original_regex_match = regex_match
+        self.validation_faults = []
         self.is_validated = False
     
     ## The type of postcode that this represents.

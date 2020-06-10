@@ -43,7 +43,16 @@ class PostcodeParser(object):
             ## determines the types of postcode that this parser will support.
             #  @remarks this should be a list of parser keys, keys should be in priorty order.
             #  @remarks when None will load all supported postcode types (default behaviour).
-            'postcode_types': None
+            'postcode_types': None,
+
+            ## determines if the parser should attempt to validate any postcodes that it parses.
+            #  @remarks defaults to True (validation enabled).
+            'validate': True,
+
+            ## gives a list of fault identifers that will not raise an exception if they are observed.
+            #  @remarks the fault will still be stored in the validation_faults property, but is_validated will be True
+            'ignored_faults': []
+
         }
 
         keyword_arguments.update(kwargs)
@@ -144,6 +153,10 @@ class PostcodeParser(object):
         self.whitespace_regex = whitespace_translate(whitespace_stratergy)
 
         # load other options
+        self.validate_postcodes = kwargs.pop('validate', True)
+        self.ignored_faults = [ int(x) for x in kwargs.pop('ignored_faults', []) ]
+
+        # create the input translation function
         self.translate_input = PostcodeParser._build_input_translater(
             uppercase = bool( kwargs.pop('force_case', True) ),
             trim = bool( kwargs.pop('trim_whitespace', True) )
@@ -165,8 +178,34 @@ class PostcodeParser(object):
 
         # attempt to find a parser that understands the input.
         for parse_regex, postcode_factory in self.parser_list:
+
             regex_match = parse_regex.match(transformed_string)
-            if regex_match: return postcode_factory(regex_match)
+
+            if regex_match:
+
+                postcode_obj = postcode_factory(regex_match)
+
+                if self.validate_postcodes:
+
+                    # validate the postcode.
+                    validation_faults = postcode_factory.Validate(postcode_obj)
+                    faults_dict = { int(f): str(f) for f in validation_faults }
+                    postcode_obj.is_validated = not bool(validation_faults)
+                    postcode_obj.validation_faults = faults_dict
+
+                    # check ignored faults to give a final chance to validate, and
+                    # determine if we should throw an error
+                    if validation_faults:
+                        for fault in validation_faults:
+                            if not int(fault) in self.ignored_faults:
+                                from wintersdeep_postcode.exceptions import ValidationError
+                                raise ValidationError(postcode_obj, faults_dict)
+
+                        # if we got here - then all errors in the validation result are
+                        # marked to be ignored... so... mark is as passed even though its not.
+                        postcode_obj.is_validated = True
+
+                return postcode_obj
 
         # we are unable to parse the given input - raise a parse error
         from wintersdeep_postcode.exceptions import ParseError
