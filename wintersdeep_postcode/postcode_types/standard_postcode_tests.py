@@ -201,7 +201,6 @@ class TestStandardPostcode(TestCase):
             postcode = StandardPostcode(regex_match)
             faults = StandardPostcode.Validate(postcode)
             self.assertTrue( expected_error in faults )
-            self.assertEqual( len(faults), 1 )
 
     ## Wikipedia: Areas with only double-digit districts: AB, LL, SO. Tests that standard postcode 
     #  observes this rules.
@@ -231,7 +230,6 @@ class TestStandardPostcode(TestCase):
             postcode = StandardPostcode(regex_match)
             faults = StandardPostcode.Validate(postcode)
             self.assertTrue( expected_error in faults )
-            self.assertEqual( len(faults), 1 )
 
     ## Wikipedia: Areas with a zero districts: BL, BS, CM, CR, FY, HA, PR, SL, SS. Tests 
     #  that standard postcode observes this rules.
@@ -239,8 +237,9 @@ class TestStandardPostcode(TestCase):
 
         from wintersdeep_postcode.exceptions.validation_error import ValidationError
 
-        # we are only going to test the failure route in this test, as good postcodes are to be 
-        # covered in another test and should cover this scenario.
+        # we usually only test the failure route as the "good" route are to be 
+        # covered in another test and should cover this scenario. Due to the 
+        # inversion of the logic on this test, we'll also hand pick a few goods.
 
         test_regex = StandardPostcode.GetParseRegex(r"\ ")    
         test_not_raises_fault = [ "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS" ]
@@ -264,9 +263,29 @@ class TestStandardPostcode(TestCase):
             postcode = StandardPostcode(regex_match)
             faults = StandardPostcode.Validate(postcode)
             self.assertTrue( test_error in faults )
-            self.assertEqual( len(faults), 1 )
 
+    ## Wikipedia: Areas without a 10 districts: BL, CM, CR, FY, HA, PR, SL, SS. Tests 
+    #  that standard postcode observes this rules.
+    def test__StandardPostcode_Validate__no_ten_district(self):
 
+        from wintersdeep_postcode.exceptions.validation_error import ValidationError
+
+        # we are only going to test the failure route in this test, as good postcodes are to be 
+        # covered in another test and should cover this scenario.
+
+        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
+        test_raises_fault = [ "BL", "CM", "CR", "FY", "HA", "PR", "SL", "SS" ]
+        
+        test_error = StandardPostcode.NoTenDistrict
+        self.assertEqual(int(test_error), 204)
+
+        for test in test_raises_fault:
+
+            test_string = fr"{test}10 1AB"
+            regex_match = test_regex.match(test_string)
+            postcode = StandardPostcode(regex_match)
+            faults = StandardPostcode.Validate(postcode)
+            self.assertTrue( test_error in faults, test)
 
 
 if __name__ ==  "__main__":

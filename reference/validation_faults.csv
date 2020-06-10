@@ -1,4 +1,6 @@
-fault_id, postcode_type, fault_overview, allocated_in_file
+# lines preceeded by a '#' character are comments, empty lines should be ignored
+# otherwise this is a standard CSV file with the following headers
+# fault_id, postcode_type, fault_description, allocated_in_file
 
 # 0-99: Internal and Testing Use
 1, 'reserved', 'used for internal testing pursposes', 'exceptions/validation_fault_test.py'
@@ -9,4 +11,5 @@ fault_id, postcode_type, fault_overview, allocated_in_file
 # 200-299: Standard Postcode
 201, 'standard', 'area expects only single digit districts', 'postcode_types/standard_postcode.py'
 202, 'standard', 'area expects only double digit districts', 'postcode_types/standard_postcode.py'
-203, 'standard', 'area not expected to have zero district', 'postcode_types/standard_postcode.py'
+203, 'standard', 'area not expected to have district zero', 'postcode_types/standard_postcode.py'
+204, 'standard', 'area not expected to have district ten', 'postcode_types/standard_postcode.py'

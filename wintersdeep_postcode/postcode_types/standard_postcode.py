@@ -45,7 +45,12 @@ class StandardPostcode(Postcode):
 
     ## Areas that have a zero district.
     AreasWithAZeroDistrict = [ 
-        "BL", "BS", "CM", "CR", "FY", "HA","PR", "SL", "SS"
+        "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
+    ]
+
+    ## Areas that do not have a district 10
+    AreasWithNoDistrictTen = [
+        "BL", "CM", "CR", "FY", "HA", "PR", "SL", "SS"
     ]
 
     ## The base number from which validation faults in this class start
@@ -64,6 +69,10 @@ class StandardPostcode(Postcode):
     NoZeroDistrict = ValidationFault( ValidationFaultBase + 3,
         _("Postcodes in this area are not known to have a district zero."))
     
+    ## Validation fault for when a postcode has a 10 district, but the area is not known to have this.
+    NoTenDistrict = ValidationFault( ValidationFaultBase + 4,
+        _("Postcodes in this area are not known to have a district ten."))
+
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
     #  @returns a compiled regular expression that can be used to parse a regeex of this type. 
@@ -99,6 +108,9 @@ class StandardPostcode(Postcode):
         if postcode.outward_district == 0:
             if not postcode.outward_area in StandardPostcode.AreasWithAZeroDistrict:
                 validation_faults.append(StandardPostcode.NoZeroDistrict)
+        elif postcode.outward_district == 10:
+            if postcode.outward_area in StandardPostcode.AreasWithNoDistrictTen:
+                validation_faults.append(StandardPostcode.NoTenDistrict)
 
         return validation_faults
 
