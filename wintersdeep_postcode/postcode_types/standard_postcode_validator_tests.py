@@ -44,7 +44,7 @@ class TestStandardPostcodeValidator(TestCase):
         # covered in another test and should cover this scenario.
 
         test_raises_fault = [ "BR", "FY", "HA", "HD", "HG", "HR", "HS", 
-            "HX", "JE", "LD", "SM", "SR", "WC", "WN", "ZE" ]
+            "HX", "JE", "LD", "SM", "WC", "WN", "ZE" ]
 
         for test in test_raises_fault:
 
