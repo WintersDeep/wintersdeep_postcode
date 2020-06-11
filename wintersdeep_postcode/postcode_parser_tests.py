@@ -396,7 +396,35 @@ class TestPostcodeParser(TestCase):
                 self.assertTrue( int(StandardPostcode.ExpectedSingleDigitDistrict) in ex.postcode.validation_faults)
                 self.assertEqual( len(ex.postcode.validation_faults), 1)
                 self.assertFalse(ex.postcode.is_validated)
-            
+
+    ## attempts to parse every postcode in the UK to check we are good.
+    #  @remarks will only do this if the relevant file is available.
+    def test_parse_all_current_uk_postocodes__if_available(self):
+        
+        from os.path import exists
+        
+        root_relative_file_path = join("reference", "current-uk-postcodes.txt")
+        file_path = join(PROJECT_ROOT_DIRECTORY, root_relative_file_path)
+        
+        if not exists(file_path):
+            error_major = f"Can't run test without {root_relative_file_path}"
+            error_minor = "this may not be checked-in/available for licencing or file size reasons."
+            self.skipTest(f"{error_major}; {error_minor}")
+        
+        from wintersdeep_postcode.exceptions import ParseError
+
+        with open(file_path, 'r') as file_handle:
+            parser = PostcodeParser()
+            postcode_string = file_handle.readline()
+            while postcode_string:
+                try:
+                    postcode = parser(postcode_string)
+                    self.assertTrue(postcode.is_validated)
+                except ParseError as ex:
+                    print(str(ex))
+                postcode_string = file_handle.readline()
+
+
 
 if __name__ ==  "__main__":
 

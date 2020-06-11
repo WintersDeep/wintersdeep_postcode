@@ -1,3 +1,6 @@
+# Project specific
+reference/current-uk-postcodes.txt
+
 # ---> Python
 # Byte-compiled / optimized / DLL files
 __pycache__/
