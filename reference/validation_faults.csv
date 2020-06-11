@@ -19,3 +19,5 @@
 208, 'standard', 'unused characters in second postition', 'postcode_types/standard_postcode.py'
 209, 'standard', 'unused subdistrict for single digit area', 'postcode_types/standard_postcode.py'
 210, 'standard', 'unused subdistrict for double digit area', 'postcode_types/standard_postcode.py'
+211, 'standard', 'first character of postcode unit is not valid.', 'postcode_types/standard_postcode.py'
+212, 'standard', 'second character of postcode unit is not valid.', 'postcode_types/standard_postcode.py'

@@ -77,6 +77,14 @@ class StandardPostcode(Postcode):
     UnusedDoubleDigitAreaSubdistrict = ValidationFault( ValidationFaultBase + 10,
         _("Double digit areas are not known to use the specified sub-district."))
 
+    ## Validation fault when the postcode units first character is not known to be used.
+    UnusedFirstCharacterInUnit = ValidationFault( ValidationFaultBase + 11,
+        _("The first character of the postcode unit is not known to be used."))
+
+    ## Validation fault when the postcode units second character is not known to be used.
+    UnusedSecondCharacterInUnit = ValidationFault( ValidationFaultBase + 12,
+        _("The second character of the postcode unit is not known to be used."))
+
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
     #  @returns a compiled regular expression that can be used to parse a regeex of this type. 
@@ -111,6 +119,8 @@ class StandardPostcode(Postcode):
             (f.UnusedCharacterInSecondPosition,  v.CheckSecondPositionExcludes),
             (f.UnusedSingleDigitAreaSubdistrict, v.CheckSingleDigitAreaSubdistricts),
             (f.UnusedDoubleDigitAreaSubdistrict, v.CheckDoubleDigitAreaSubdistricts),
+            (f.UnusedFirstCharacterInUnit,       v.CheckFirstUnitCharacterExcludes),
+            (f.UnusedSecondCharacterInUnit,      v.CheckSecondUnitCharacterExcludes),
         ]
 
         return [ fault for fault, check in validation_steps if check(postcode) ]

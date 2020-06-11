@@ -194,6 +194,34 @@ class StandardPostcodeValidator(object):
         return impacted_by_rule
 
 
+
+    ## Charactesr that are not used in the unit string.
+    #  @remarks loaded from JSON file 'standard_postcode_validator.json'
+    UnitExcludes = []
+    
+    ## Checks that a postcode does not include characters in the first character of the unit string that are unused.
+    #  @remarks we check the first/second unit character seperately to provide more comprehensive errors.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode the postcode to check for conformance to this rule.
+    #  @returns True if the postcode violates this rule, else False.
+    @classmethod
+    def CheckFirstUnitCharacterExcludes(cls, postcode):
+        character = postcode.inward_unit[0]
+        impacted_by_rule = character in cls.UnitExcludes
+        return impacted_by_rule
+    
+    ## Checks that a postcode does not include characters in the second character of the unit string that are unused.
+    #  @remarks we check the first/second unit character seperately to provide more comprehensive errors.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode the postcode to check for conformance to this rule.
+    #  @returns True if the postcode violates this rule, else False.
+    @classmethod
+    def CheckSecondUnitCharacterExcludes(cls, postcode):
+        character = postcode.inward_unit[1]
+        impacted_by_rule = character in cls.UnitExcludes
+        return impacted_by_rule
+
+
 ## Loads various static members used for validation of standard postcodes from
 #  a JSON file - this is expected to be co-located with this class.
 def load_validator_params_from_json():
@@ -214,6 +242,7 @@ def load_validator_params_from_json():
     StandardPostcodeValidator.DoubleDigitAreaSubdistricts = config_json['double-digit-area-subdistricts']
     StandardPostcodeValidator.SecondPositionExcludes = config_json['second-position-excludes']
     StandardPostcodeValidator.FirstPositionExcludes = config_json['first-position-excludes']
+    StandardPostcodeValidator.UnitExcludes = config_json['unit-excludes']
     
     subdivision_map = config_json["subdivided-districts"]
     StandardPostcodeValidator.AreasWithSubdistricts = {  k: { 
