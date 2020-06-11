@@ -210,7 +210,7 @@ class PostcodeParser(object):
 
         # we are unable to parse the given input - raise a parse error
         from wintersdeep_postcode.exceptions import ParseError
-        raise ParseError(input_string, self)
+        raise ParseError(transformed_string, self)
 
     ## allows directly invoking the class to parse input
     #  @param self the instance of the object that is invoking this method.
