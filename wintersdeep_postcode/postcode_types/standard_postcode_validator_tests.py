@@ -162,6 +162,19 @@ class TestStandardPostcodeValidator(TestCase):
         postcode = self.createStandardPostcode(r"WL1 9XX")
         self.assertFalse(StandardPostcodeValidator.CheckSecondPositionExcludes(postcode))
         
+    ## Tests the validator that checks for unsed characters in the second postition.
+    def test__StandardPostcodeValidator_CheckSingleDigitAreaSubdistricts(self):
+        
+        test_list = [
+            (False, "ABCDEFGHJKPSTUW"),
+            (True, "ILMNOQRVXYZ")
+        ]
+        
+        for expected_result, character_list in test_list:
+            for character in character_list:
+                postcode = self.createStandardPostcode(fr"A1{character} 9XX")
+                check = StandardPostcodeValidator.CheckSingleDigitAreaSubdistricts(postcode)
+                self.assertEqual(expected_result, check)
         
     
 

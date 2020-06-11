@@ -69,6 +69,10 @@ class StandardPostcode(Postcode):
     UnusedCharacterInSecondPosition = ValidationFault( ValidationFaultBase + 8,
         _("The character in the second postition is not valid for any postcode."))
 
+    ## Validation fault when the postcode contains an subdistrict which isnt used for a single digit area.
+    UnusedSingleDigitAreaSubdistrict = ValidationFault( ValidationFaultBase + 9,
+        _("Single digit areas are not known to use the specified sub-district"))
+
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
     #  @returns a compiled regular expression that can be used to parse a regeex of this type. 
@@ -93,14 +97,15 @@ class StandardPostcode(Postcode):
         v = StandardPostcodeValidator
 
         validation_steps = [
-            (f.ExpectedSingleDigitDistrict,     v.CheckAreasWithOnlySingleDigitDistricts),
-            (f.ExpectedDoubleDigitDistrict,     v.CheckAreasWithOnlyDoubleDigitDistricts),
-            (f.NoZeroDistrict,                  v.CheckAreasWithDistrictZero),
-            (f.NoTenDistrict,                   v.CheckAreasWithoutDistrictTen),
-            (f.SubdistrictsUnsupported,         v.CheckAreasWithSubdistricts),
-            (f.UnexpectedDistrictSubdivision,   v.CheckAreasWithSpecificSubdistricts),
-            (f.UnusedCharacterInFirstPosition,  v.CheckFirstPositionExcludes),
-            (f.UnusedCharacterInSecondPosition, v.CheckSecondPositionExcludes),
+            (f.ExpectedSingleDigitDistrict,      v.CheckAreasWithOnlySingleDigitDistricts),
+            (f.ExpectedDoubleDigitDistrict,      v.CheckAreasWithOnlyDoubleDigitDistricts),
+            (f.NoZeroDistrict,                   v.CheckAreasWithDistrictZero),
+            (f.NoTenDistrict,                    v.CheckAreasWithoutDistrictTen),
+            (f.SubdistrictsUnsupported,          v.CheckAreasWithSubdistricts),
+            (f.UnexpectedDistrictSubdivision,    v.CheckAreasWithSpecificSubdistricts),
+            (f.UnusedCharacterInFirstPosition,   v.CheckFirstPositionExcludes),
+            (f.UnusedCharacterInSecondPosition,  v.CheckSecondPositionExcludes),
+            (f.UnusedSingleDigitAreaSubdistrict, v.CheckSingleDigitAreaSubdistricts)
         ]
 
         return [ fault for fault, check in validation_steps if check(postcode) ]

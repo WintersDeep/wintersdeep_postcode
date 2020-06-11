@@ -156,6 +156,26 @@ class StandardPostcodeValidator(object):
         return impacted_by_rule
 
 
+
+    ## Charactesr that are used in the third apha position (for single digit areas).
+    #  @remarks loaded from JSON file 'standard_postcode_validator.json'
+    SingleDigitAreaSubdistricts = []
+    
+    ## Checks that a postcode does not include unused subdistricts for single digit areas.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode the postcode to check for conformance to this rule.
+    #  @returns True if the postcode violates this rule, else False.
+    @classmethod
+    def CheckSingleDigitAreaSubdistricts(cls, postcode):
+        impacted_by_rule = False
+        if postcode.outward_subdistrict:
+            if len(postcode.outward_area) == 1:
+                allowed_subdistricts = cls.SingleDigitAreaSubdistricts
+                subdistrict = postcode.outward_subdistrict
+                impacted_by_rule = not subdistrict in allowed_subdistricts
+        return impacted_by_rule
+
+
 ## Loads various static members used for validation of standard postcodes from
 #  a JSON file - this is expected to be co-located with this class.
 def load_validator_params_from_json():
@@ -179,6 +199,7 @@ def load_validator_params_from_json():
     } for k, v in subdivision_map.items() }
     StandardPostcodeValidator.FirstPositionExcludes = config_json['first-position-excludes']
     StandardPostcodeValidator.SecondPositionExcludes = config_json['second-position-excludes']
+    StandardPostcodeValidator.SingleDigitAreaSubdistricts = config_json['single-digit-area-subdistricts']
 
 
 load_validator_params_from_json()

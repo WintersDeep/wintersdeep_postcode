@@ -25,5 +25,9 @@
         "W":  { "1": null }
     },
     "first-position-excludes": [ "Q", "V", "X" ],
-    "second-position-excludes": [ "I", "J", "Z" ]
+    "second-position-excludes": [ "I", "J", "Z" ],
+    "single-digit-area-subdistricts": [ 
+        "A", "B", "C", "D", "E", "F", "G", "H", 
+        "J", "K", "P", "S", "T", "U", "W"
+    ]
 }
