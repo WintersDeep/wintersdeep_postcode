@@ -175,6 +175,24 @@ class StandardPostcodeValidator(object):
                 impacted_by_rule = not subdistrict in allowed_subdistricts
         return impacted_by_rule
 
+    ## Charactesr that are used in the fourth apha position (for double digit areas).
+    #  @remarks loaded from JSON file 'standard_postcode_validator.json'
+    DoubleDigitAreaSubdistricts = []
+    
+    ## Checks that a postcode does not include unused subdistricts for double digit areas.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode the postcode to check for conformance to this rule.
+    #  @returns True if the postcode violates this rule, else False.
+    @classmethod
+    def CheckDoubleDigitAreaSubdistricts(cls, postcode):
+        impacted_by_rule = False
+        if postcode.outward_subdistrict:
+            if len(postcode.outward_area) == 2:
+                allowed_subdistricts = cls.DoubleDigitAreaSubdistricts
+                subdistrict = postcode.outward_subdistrict
+                impacted_by_rule = not subdistrict in allowed_subdistricts
+        return impacted_by_rule
+
 
 ## Loads various static members used for validation of standard postcodes from
 #  a JSON file - this is expected to be co-located with this class.
@@ -188,18 +206,19 @@ def load_validator_params_from_json():
     with open(json_configuration_file, 'r') as file_handle:
         config_json = load(file_handle)
 
-    subdivision_map = config_json["subdivided-districts"]
-
-    StandardPostcodeValidator.AreasWithOnlySingleDigitDistricts = config_json['single-digit-districts']
-    StandardPostcodeValidator.AreasWithOnlyDoubleDigitDistricts = config_json['double-digit-districts']
     StandardPostcodeValidator.AreasWithDistrictZero = config_json['has-district-zero']
     StandardPostcodeValidator.AreasWithoutDistrictTen = config_json['no-district-ten']
+    StandardPostcodeValidator.AreasWithOnlyDoubleDigitDistricts = config_json['double-digit-districts']
+    StandardPostcodeValidator.AreasWithOnlySingleDigitDistricts = config_json['single-digit-districts']
+    StandardPostcodeValidator.SingleDigitAreaSubdistricts = config_json['single-digit-area-subdistricts']
+    StandardPostcodeValidator.DoubleDigitAreaSubdistricts = config_json['double-digit-area-subdistricts']
+    StandardPostcodeValidator.SecondPositionExcludes = config_json['second-position-excludes']
+    StandardPostcodeValidator.FirstPositionExcludes = config_json['first-position-excludes']
+    
+    subdivision_map = config_json["subdivided-districts"]
     StandardPostcodeValidator.AreasWithSubdistricts = {  k: { 
         int(k1): v1 for k1, v1 in v.items()
     } for k, v in subdivision_map.items() }
-    StandardPostcodeValidator.FirstPositionExcludes = config_json['first-position-excludes']
-    StandardPostcodeValidator.SecondPositionExcludes = config_json['second-position-excludes']
-    StandardPostcodeValidator.SingleDigitAreaSubdistricts = config_json['single-digit-area-subdistricts']
 
 
 load_validator_params_from_json()

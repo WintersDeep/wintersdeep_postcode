@@ -176,6 +176,20 @@ class TestStandardPostcodeValidator(TestCase):
                 check = StandardPostcodeValidator.CheckSingleDigitAreaSubdistricts(postcode)
                 self.assertEqual(expected_result, check)
         
+    ## Tests the validator that checks for unsed characters in the fourth postition.
+    def test__StandardPostcodeValidator_CheckDoubleDigitAreaSubdistricts(self):
+        
+        test_list = [
+            (False, "ABEHMNPRVWXY"),
+            (True, "CDFGIJKLOQSTUZ")
+        ]
+        
+        for expected_result, character_list in test_list:
+            for character in character_list:
+                postcode = self.createStandardPostcode(fr"AA1{character} 9XX")
+                check = StandardPostcodeValidator.CheckDoubleDigitAreaSubdistricts(postcode)
+                self.assertEqual(expected_result, check, postcode)
+        
     
 
 if __name__ ==  "__main__":

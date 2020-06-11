@@ -71,7 +71,11 @@ class StandardPostcode(Postcode):
 
     ## Validation fault when the postcode contains an subdistrict which isnt used for a single digit area.
     UnusedSingleDigitAreaSubdistrict = ValidationFault( ValidationFaultBase + 9,
-        _("Single digit areas are not known to use the specified sub-district"))
+        _("Single digit areas are not known to use the specified sub-district."))
+
+    ## Validation fault when the postcode contains an subdistrict which isnt used for a double digit area.
+    UnusedDoubleDigitAreaSubdistrict = ValidationFault( ValidationFaultBase + 10,
+        _("Double digit areas are not known to use the specified sub-district."))
 
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
@@ -105,7 +109,8 @@ class StandardPostcode(Postcode):
             (f.UnexpectedDistrictSubdivision,    v.CheckAreasWithSpecificSubdistricts),
             (f.UnusedCharacterInFirstPosition,   v.CheckFirstPositionExcludes),
             (f.UnusedCharacterInSecondPosition,  v.CheckSecondPositionExcludes),
-            (f.UnusedSingleDigitAreaSubdistrict, v.CheckSingleDigitAreaSubdistricts)
+            (f.UnusedSingleDigitAreaSubdistrict, v.CheckSingleDigitAreaSubdistricts),
+            (f.UnusedDoubleDigitAreaSubdistrict, v.CheckDoubleDigitAreaSubdistricts),
         ]
 
         return [ fault for fault, check in validation_steps if check(postcode) ]

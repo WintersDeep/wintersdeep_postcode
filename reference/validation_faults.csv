@@ -18,3 +18,4 @@
 207, 'standard', 'unused characters in first postition', 'postcode_types/standard_postcode.py'
 208, 'standard', 'unused characters in second postition', 'postcode_types/standard_postcode.py'
 209, 'standard', 'unused subdistrict for single digit area', 'postcode_types/standard_postcode.py'
+210, 'standard', 'unused subdistrict for double digit area', 'postcode_types/standard_postcode.py'

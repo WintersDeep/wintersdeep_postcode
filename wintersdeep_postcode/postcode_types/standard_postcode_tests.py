@@ -142,6 +142,7 @@ class TestStandardPostcode(TestCase):
             ( StandardPostcode.UnusedCharacterInFirstPosition, 207 ),
             ( StandardPostcode.UnusedCharacterInSecondPosition, 208 ),
             ( StandardPostcode.UnusedSingleDigitAreaSubdistrict, 209 ),
+            ( StandardPostcode.UnusedDoubleDigitAreaSubdistrict, 210 ),
         ]
 
         for error_object, expected_id in test_list:
@@ -159,7 +160,8 @@ class TestStandardPostcode(TestCase):
             ("N1S 2XX", StandardPostcode.UnexpectedDistrictSubdivision),        
             ("X1 2XX", StandardPostcode.UnusedCharacterInFirstPosition),
             ("XI1 2XX", StandardPostcode.UnusedCharacterInSecondPosition),
-            ("A1X 2XX", StandardPostcode.UnusedSingleDigitAreaSubdistrict)
+            ("A1X 2XX", StandardPostcode.UnusedSingleDigitAreaSubdistrict),
+            ("AA1Z 2XX", StandardPostcode.UnusedDoubleDigitAreaSubdistrict),
         ]
 
         for test_string, expected_fault in test_list:       
