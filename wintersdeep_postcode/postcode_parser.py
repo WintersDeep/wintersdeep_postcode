@@ -189,7 +189,8 @@ class PostcodeParser(object):
 
                     # validate the postcode.
                     validation_faults = postcode_factory.Validate(postcode_obj)
-                    faults_dict = { int(f): str(f) for f in validation_faults }
+                    faults_format_args = vars(postcode_obj)
+                    faults_dict = { int(f): str(f).format(**faults_format_args) for f in validation_faults }
                     postcode_obj.is_validated = not bool(validation_faults)
                     postcode_obj.validation_faults = faults_dict
 
