@@ -20,6 +20,22 @@ from wintersdeep_postcode.postcode_types.standard_postcode_validator import Stan
 ## Unit Test class for the StandardPostcodeValidator class
 class TestStandardPostcodeValidator(TestCase):
 
+    ## Sets up class members used across several tests.
+    #  @param cls the type of class that is invoking this method.
+    @classmethod
+    def setUpClass(cls):
+        cls.PostcodeRegex = StandardPostcode.GetParseRegex(r"\ ")
+
+    ## Creates a postcode using the standard delimiter.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode_string the postcode that is to be made into an object.
+    #  @returns the postcode string as a standardpostcode object.
+    @classmethod
+    def createStandardPostcode(cls, postcode_string):
+        regex_match = cls.PostcodeRegex.match(postcode_string)
+        postcode_result = StandardPostcode(regex_match)
+        return postcode_result
+
     ## Wikipedia: Areas with only single-digit districts: BR, FY, HA, HD, HG, HR, HS, HX, JE
     #  LD, SM, SR, WC, WN, ZE. Tests that standard postcode observes these rules.
     def test__StandardPostcodeValidator_CheckAreasWithOnlySingleDigitDistricts(self):
@@ -27,20 +43,15 @@ class TestStandardPostcodeValidator(TestCase):
         # we are only going to test the failure route in this test, as good postcodes are to be 
         # covered in another test and should cover this scenario.
 
-        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
         test_raises_fault = [ "BR", "FY", "HA", "HD", "HG", "HR", "HS", 
             "HX", "JE", "LD", "SM", "SR", "WC", "WN", "ZE" ]
 
         for test in test_raises_fault:
 
-            test_string = fr"{test}9 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}9 1AB")
             self.assertFalse(StandardPostcodeValidator.CheckAreasWithOnlySingleDigitDistricts(postcode))
 
-            test_string = fr"{test}10 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}10 1AB")
             self.assertTrue(StandardPostcodeValidator.CheckAreasWithOnlySingleDigitDistricts(postcode))
             
 
@@ -51,19 +62,14 @@ class TestStandardPostcodeValidator(TestCase):
         # we are only going to test the failure route in this test, as good postcodes are to be 
         # covered in another test and should cover this scenario.
 
-        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
         test_raises_fault = [ "AB", "LL", "SO" ]
 
         for test in test_raises_fault:
 
-            test_string = fr"{test}10 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}10 1AB")
             self.assertFalse(StandardPostcodeValidator.CheckAreasWithOnlyDoubleDigitDistricts(postcode))
 
-            test_string = fr"{test}9 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}9 1AB")
             self.assertTrue(StandardPostcodeValidator.CheckAreasWithOnlyDoubleDigitDistricts(postcode))
 
     ## Wikipedia: Areas with a zero districts: BL, BS, CM, CR, FY, HA, PR, SL, SS. Tests 
@@ -74,22 +80,17 @@ class TestStandardPostcodeValidator(TestCase):
         # covered in another test and should cover this scenario. Due to the 
         # inversion of the logic on this test, we'll also hand pick a few goods.
 
-        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
         test_not_raises_fault = [ "BL", "BS", "CM", "CR", "FY", "HA", "PR", "SL", "SS" ]
         test_raises_fault = [ "BR", "WC", "SM", "SR" ]
 
         for test in test_not_raises_fault:
 
-            test_string = fr"{test}0 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}0 1AB")
             self.assertFalse(StandardPostcodeValidator.CheckAreasWithDistrictZero(postcode))
 
         for test in test_raises_fault:
 
-            test_string = fr"{test}0 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}0 1AB")
             self.assertTrue(StandardPostcodeValidator.CheckAreasWithDistrictZero(postcode))
             
 
@@ -100,14 +101,11 @@ class TestStandardPostcodeValidator(TestCase):
         # we are only going to test the failure route in this test, as good postcodes are to be 
         # covered in another test and should cover this scenario.
 
-        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
         test_raises_fault = [ "BL", "CM", "CR", "FY", "HA", "PR", "SL", "SS" ]
         
         for test in test_raises_fault:
 
-            test_string = fr"{test}10 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}10 1AB")
             self.assertTrue(StandardPostcodeValidator.CheckAreasWithoutDistrictTen(postcode))
             
     ## Wikipedia: Areas with subdivided districts: EC1-4, SW1, W1, WC1, WC2, E1, 
@@ -117,36 +115,27 @@ class TestStandardPostcodeValidator(TestCase):
         # we are only going to test the failure route in this test, as good postcodes are to be 
         # covered in another test and should cover this scenario.
 
-        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
         test_raises_fault = [ "A", "B", "C", "FY", "HA", "PR", "SL", "SS", "WC" ]
         
         for test in test_raises_fault:
 
-            test_string = fr"{test}5A 1AB"
-            regex_match = test_regex.match(test_string)
-            postcode = StandardPostcode(regex_match)
+            postcode = self.createStandardPostcode(fr"{test}5A 1AB")
             self.assertTrue( StandardPostcodeValidator.CheckAreasWithSubdistricts(postcode) )
 
-        test_string = fr"WC1A 1AB"
-        regex_match = test_regex.match(test_string)
-        postcode = StandardPostcode(regex_match)
+        postcode = self.createStandardPostcode(r"WC1A 1AB")
         self.assertFalse( StandardPostcodeValidator.CheckAreasWithSubdistricts(postcode) )
 
     ## Tests that where we know about specific subdistricts the parser will only allow
     #  elements from the selection.
     def test__StandardPostcodeValidator_CheckAreasWithSpecificSubdistricts(self):
-        test_regex = StandardPostcode.GetParseRegex(r"\ ")    
-
-        regex_match = test_regex.match("N1C 9XX")
-        postcode = StandardPostcode(regex_match)
+        
+        postcode = self.createStandardPostcode(r"N1C 9XX")
         self.assertFalse( StandardPostcodeValidator.CheckAreasWithSpecificSubdistricts(postcode) )
 
-        regex_match = test_regex.match("N1P 9XX")
-        postcode = StandardPostcode(regex_match)
+        postcode = self.createStandardPostcode(r"N1P 9XX")
         self.assertFalse( StandardPostcodeValidator.CheckAreasWithSpecificSubdistricts(postcode) )
         
-        regex_match = test_regex.match("N1R 9XX")
-        postcode = StandardPostcode(regex_match)
+        postcode = self.createStandardPostcode(r"N1R 9XX")
         self.assertTrue( StandardPostcodeValidator.CheckAreasWithSpecificSubdistricts(postcode) )
 
 
