@@ -138,6 +138,22 @@ class TestStandardPostcodeValidator(TestCase):
         postcode = self.createStandardPostcode(r"N1R 9XX")
         self.assertTrue( StandardPostcodeValidator.CheckAreasWithSpecificSubdistricts(postcode) )
 
+    ## Tests the validator that checks for unsed characters in the first postition.
+    def test__StandardPostcodeValidator_CheckFirstPositionExcludes(self):
+        postcode = self.createStandardPostcode(r"Q1 9XX")
+        self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
+
+        postcode = self.createStandardPostcode(r"V1 9XX")
+        self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
+
+        postcode = self.createStandardPostcode(r"X1 9XX")
+        self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
+        
+        postcode = self.createStandardPostcode(r"W1 9XX")
+        self.assertFalse(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
+        
+        
+    
 
 if __name__ ==  "__main__":
 

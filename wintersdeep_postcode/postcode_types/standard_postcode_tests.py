@@ -181,6 +181,7 @@ class TestStandardPostcode(TestCase):
         self.assertEqual( int(StandardPostcode.NoTenDistrict), 204 )
         self.assertEqual( int(StandardPostcode.SubdistrictsUnsupported), 205 )
         self.assertEqual( int(StandardPostcode.UnexpectedDistrictSubdivision), 206 )
+        self.assertEqual( int(StandardPostcode.UnusedCharacterInFirstPosition), 207)
 
     ## Checks that the method we use to bind tests and faults is working
     def test__StandardPostcode_Validate__fault_assignment(self):
@@ -200,6 +201,7 @@ class TestStandardPostcode(TestCase):
         check_for_fault("BL10 2XX", StandardPostcode.NoTenDistrict)            
         check_for_fault("XY7N 2XX", StandardPostcode.SubdistrictsUnsupported)            
         check_for_fault("N1S 2XX", StandardPostcode.UnexpectedDistrictSubdivision)            
+        check_for_fault("X1 2XX", StandardPostcode.UnusedCharacterInFirstPosition)            
 
 
 

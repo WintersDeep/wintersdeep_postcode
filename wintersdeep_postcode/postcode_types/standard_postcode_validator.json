@@ -23,5 +23,6 @@
         "SE": { "1": [ "P" ] },
         "SW": { "1": null },
         "W":  { "1": null }
-    }
+    },
+    "first-position-excludes": [ "Q", "V", "X" ]
 }

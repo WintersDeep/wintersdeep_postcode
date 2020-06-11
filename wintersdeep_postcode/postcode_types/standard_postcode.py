@@ -61,6 +61,10 @@ class StandardPostcode(Postcode):
     UnexpectedDistrictSubdivision = ValidationFault( ValidationFaultBase + 6, 
         _("Postcodes in this area/district have one or more sub-districts, but not the one used."))
 
+    ## Validation fault when the postcode contains an unused character in the first position.
+    UnusedCharacterInFirstPosition = ValidationFault( ValidationFaultBase + 7,
+        _("Q, V and X are not used in the first postition of any postcode."))
+
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
     #  @returns a compiled regular expression that can be used to parse a regeex of this type. 
@@ -90,7 +94,8 @@ class StandardPostcode(Postcode):
             (f.NoZeroDistrict,                  v.CheckAreasWithDistrictZero),
             (f.NoTenDistrict,                   v.CheckAreasWithoutDistrictTen),
             (f.SubdistrictsUnsupported,         v.CheckAreasWithSubdistricts),
-            (f.UnexpectedDistrictSubdivision,   v.CheckAreasWithSpecificSubdistricts)
+            (f.UnexpectedDistrictSubdivision,   v.CheckAreasWithSpecificSubdistricts),
+            (f.UnusedCharacterInFirstPosition,  v.CheckFirstPositionExcludes)
         ]
 
         return [ fault for fault, check in validation_steps if check(postcode) ]
