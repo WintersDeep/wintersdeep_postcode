@@ -15,3 +15,5 @@
 204, 'standard', 'area not expected to have district ten', 'postcode_types/standard_postcode.py'
 205, 'standard', 'area/district not expected to have subdistricts ', 'postcode_types/standard_postcode.py'
 206, 'standard', 'area/district does not have the specific subdistrict used ', 'postcode_types/standard_postcode.py'
+207, 'standard', 'unused characters in first postition', 'postcode_types/standard_postcode.py'
+208, 'standard', 'unused characters in second postition', 'postcode_types/standard_postcode.py'

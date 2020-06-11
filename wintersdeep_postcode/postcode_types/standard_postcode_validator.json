@@ -24,5 +24,6 @@
         "SW": { "1": null },
         "W":  { "1": null }
     },
-    "first-position-excludes": [ "Q", "V", "X" ]
+    "first-position-excludes": [ "Q", "V", "X" ],
+    "second-position-excludes": [ "I", "J", "Z" ]
 }

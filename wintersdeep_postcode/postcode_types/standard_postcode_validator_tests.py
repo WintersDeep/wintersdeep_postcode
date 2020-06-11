@@ -140,17 +140,27 @@ class TestStandardPostcodeValidator(TestCase):
 
     ## Tests the validator that checks for unsed characters in the first postition.
     def test__StandardPostcodeValidator_CheckFirstPositionExcludes(self):
-        postcode = self.createStandardPostcode(r"Q1 9XX")
-        self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
-
-        postcode = self.createStandardPostcode(r"V1 9XX")
-        self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
-
-        postcode = self.createStandardPostcode(r"X1 9XX")
-        self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
         
+        bad_first_characters = [ "Q", "V", "X" ]
+        
+        for character in bad_first_characters:
+            postcode = self.createStandardPostcode(fr"{character}1 9XX")
+            self.assertTrue(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
+
         postcode = self.createStandardPostcode(r"W1 9XX")
         self.assertFalse(StandardPostcodeValidator.CheckFirstPositionExcludes(postcode))
+        
+    ## Tests the validator that checks for unsed characters in the second postition.
+    def test__StandardPostcodeValidator_CheckSecondPositionExcludes(self):
+        
+        bad_second_characters = [ "I", "J", "Z" ]
+        
+        for character in bad_second_characters:
+            postcode = self.createStandardPostcode(fr"A{character}1 9XX")
+            self.assertTrue(StandardPostcodeValidator.CheckSecondPositionExcludes(postcode), character)
+
+        postcode = self.createStandardPostcode(r"WL1 9XX")
+        self.assertFalse(StandardPostcodeValidator.CheckSecondPositionExcludes(postcode))
         
         
     

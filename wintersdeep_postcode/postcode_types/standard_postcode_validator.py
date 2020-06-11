@@ -123,10 +123,11 @@ class StandardPostcodeValidator(object):
 
 
 
+    ## Charactesr that are not used in the first position.
     #  @remarks loaded from JSON file 'standard_postcode_validator.json'
     FirstPositionExcludes = []
     
-    ## Checks that a postcode does not include reserved characters in the first postition.
+    ## Checks that a postcode does not include usued characters in the first postition.
     #  @param cls the type of class that is invoking this method.
     #  @param postcode the postcode to check for conformance to this rule.
     #  @returns True if the postcode violates this rule, else False.
@@ -134,6 +135,24 @@ class StandardPostcodeValidator(object):
     def CheckFirstPositionExcludes(cls, postcode):
         first_postion_char = postcode.outward_area[0]
         impacted_by_rule = first_postion_char in cls.FirstPositionExcludes
+        return impacted_by_rule
+
+
+
+    ## Charactesr that are not used in the second position.
+    #  @remarks loaded from JSON file 'standard_postcode_validator.json'
+    SecondPositionExcludes = []
+    
+    ## Checks that a postcode does not include unused characters in the second postition.
+    #  @param cls the type of class that is invoking this method.
+    #  @param postcode the postcode to check for conformance to this rule.
+    #  @returns True if the postcode violates this rule, else False.
+    @classmethod
+    def CheckSecondPositionExcludes(cls, postcode):
+        impacted_by_rule = False
+        if len(postcode.outward_area) > 1:
+            second_postion_char = postcode.outward_area[1]
+            impacted_by_rule = second_postion_char in cls.SecondPositionExcludes
         return impacted_by_rule
 
 
@@ -159,6 +178,7 @@ def load_validator_params_from_json():
         int(k1): v1 for k1, v1 in v.items()
     } for k, v in subdivision_map.items() }
     StandardPostcodeValidator.FirstPositionExcludes = config_json['first-position-excludes']
+    StandardPostcodeValidator.SecondPositionExcludes = config_json['second-position-excludes']
 
 
 load_validator_params_from_json()
