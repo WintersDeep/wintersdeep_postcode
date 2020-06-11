@@ -39,51 +39,51 @@ class StandardPostcode(Postcode):
 
     ## Validation fault for when a postcode in an area with only single digit districts cites a 2-digit one.
     ExpectedSingleDigitDistrict = ValidationFault( ValidationFaultBase + 1, 
-        _("Postcodes in this area are expected to only have single digit districts.") )
+        _("Postcodes in area '{outward_area}' are expected to have single digit districts.") )
 
     ## Validation fault for when a postcode in an area with only double digit districts cites a 1-digit one.
     ExpectedDoubleDigitDistrict = ValidationFault( ValidationFaultBase + 2, 
-        _("Postcodes in this area are expected to only have double digit districts.") )
+        _("Postcodes in area '{outward_area}' are expected to have double digit districts.") )
 
     ## Validation fault for when a postcode has a zero district, but the area is not known to have this.
     NoZeroDistrict = ValidationFault( ValidationFaultBase + 3,
-        _("Postcodes in this area are not known to have a district zero."))
+        _("Postcodes in area '{outward_area}' are not known to have a district zero."))
     
     ## Validation fault for when a postcode has a 10 district, but the area is not known to have this.
     NoTenDistrict = ValidationFault( ValidationFaultBase + 4,
-        _("Postcodes in this area are not known to have a district ten."))
+        _("Postcodes in area '{outward_area}' are not known to have a district ten."))
     
     ## Validation fault for when a postcode has a 10 district, but the area is not known to have this.
     SubdistrictsUnsupported = ValidationFault( ValidationFaultBase + 5,
-        _("Postcodes in this area/district are not known to have subdivisions."))
+        _("Postcodes in '{outward_area}{outward_district}' are not known to have subdistricts."))
     
     ## Validation fault when the postcode supports subdivisions, but no the one used.
     UnexpectedDistrictSubdivision = ValidationFault( ValidationFaultBase + 6, 
-        _("Postcodes in this area/district are known to have one or more sub-districts, but not the one used."))
+        _("'{outward_subdistrict}' is not a recognised subdistrict of '{outward_area}{outward_district}'."))
 
     ## Validation fault when the postcode contains an unused character in the first position.
     UnusedCharacterInFirstPosition = ValidationFault( ValidationFaultBase + 7,
-        _("The character in the first postition is not valid for any postcode."))
+        _("'{outward_area[0]}' is not valid in the first position of any postcode."))
 
-    ## Validation fault when the postcode contains an unused character in the first position.
+    ## Validation fault when the postcode contains an unused character in the second position.
     UnusedCharacterInSecondPosition = ValidationFault( ValidationFaultBase + 8,
-        _("The character in the second postition is not valid for any postcode."))
+        _("'{outward_area[1]}' is not valid in the second position of any postcode."))
 
     ## Validation fault when the postcode contains an subdistrict which isnt used for a single digit area.
     UnusedSingleDigitAreaSubdistrict = ValidationFault( ValidationFaultBase + 9,
-        _("Single digit areas are not known to use the specified sub-district."))
+        _("Postcodes in area '{outward_area}' are not known to use sub-district '{outward_subdistrict}'."))
 
     ## Validation fault when the postcode contains an subdistrict which isnt used for a double digit area.
     UnusedDoubleDigitAreaSubdistrict = ValidationFault( ValidationFaultBase + 10,
-        _("Double digit areas are not known to use the specified sub-district."))
+        _("Postcodes in area '{outward_area}' are not known to use sub-district '{outward_subdistrict}'."))
 
     ## Validation fault when the postcode units first character is not known to be used.
     UnusedFirstCharacterInUnit = ValidationFault( ValidationFaultBase + 11,
-        _("The first character of the postcode unit is not known to be used."))
+        _("'{inward_unit[0]}' is not known to be used as the first character of the postcode inward unit."))
 
     ## Validation fault when the postcode units second character is not known to be used.
     UnusedSecondCharacterInUnit = ValidationFault( ValidationFaultBase + 12,
-        _("The second character of the postcode unit is not known to be used."))
+        _("'{inward_unit[1]}' is not known to be used as the second character of the postcode inward unit."))
 
     ## Get a regular expression that can be used to parse postcodes of this type.
     #  @param whitespace_regex the regular expression used to parse any delimiting whitespace.
