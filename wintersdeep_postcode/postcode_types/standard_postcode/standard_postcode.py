@@ -5,7 +5,7 @@ from gettext import gettext as _
 # project imports
 from wintersdeep_postcode.postcode import Postcode
 from wintersdeep_postcode.exceptions.validation_fault import ValidationFault
-from wintersdeep_postcode.postcode_types.standard_postcode_validator import StandardPostcodeValidator
+from wintersdeep_postcode.postcode_types.standard_postcode.standard_postcode_validator import StandardPostcodeValidator
 
 ## A standard UK postcode.
 #  @remarks this represents standard UK domestic/commercial postcode 

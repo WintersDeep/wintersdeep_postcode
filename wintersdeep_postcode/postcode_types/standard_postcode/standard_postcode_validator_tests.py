@@ -14,8 +14,8 @@ if not PROJECT_ROOT_DIRECTORY in python_path:
     python_path.insert(0, PROJECT_ROOT_DIRECTORY)
 
 # project imports
-from wintersdeep_postcode.postcode_types.standard_postcode import StandardPostcode
-from wintersdeep_postcode.postcode_types.standard_postcode_validator import StandardPostcodeValidator
+from wintersdeep_postcode.postcode_types.standard_postcode.standard_postcode import StandardPostcode
+from wintersdeep_postcode.postcode_types.standard_postcode.standard_postcode_validator import StandardPostcodeValidator
 
 ## Unit Test class for the StandardPostcodeValidator class
 class TestStandardPostcodeValidator(TestCase):

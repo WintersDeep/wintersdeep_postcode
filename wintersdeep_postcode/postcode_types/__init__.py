@@ -1,5 +1,5 @@
 # project imports
-from wintersdeep_postcode.postcode_types.standard_postcode import StandardPostcode
+from wintersdeep_postcode.postcode_types.standard_postcode.standard_postcode import StandardPostcode
 
 ## a list of all supported parsers in order of priority
 #  @remarks parser results should be issued from the first parser to both parse, and validate.
