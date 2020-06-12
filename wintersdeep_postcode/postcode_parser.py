@@ -8,17 +8,17 @@ class PostcodeParser(object):
     ## Regular expression used if the parser is using strict whitespace rules.
     #  @remarks postcodes must use a single space character in this mode.
     #  @remarks use 'whitespace': 'strict' to use this option - see PostcodeParser._get_whitepsace_pattern
-    StrictWhitespace = r"(\ )"
+    StrictWhitespace = r"(?:\ )"
 
     ## Regular expression used if the parser is using tolerant whitespace.
     #  @remarks postcodes can use zero or one whitespace character in this mode. 
     #  @remarks use 'whitespace': 'tolerant' to use this option - see PostcodeParser._get_whitepsace_pattern
-    TolerantWhitespace = r"(\ ?)"
+    TolerantWhitespace = r"(?:\ ?)"
 
     ## Regular expression used if the parser is using lenient whitespace rules.
     #  @remarks postcodes can use zero or more whitespace characters as in this mode.
     #  @remarks use 'whitespace': 'lenient' to use this option - see PostcodeParser._get_whitepsace_pattern
-    LenientWhitespace = r"(\s*)"
+    LenientWhitespace = r"(?:\s*)"
 
     ## Creates a new instance of the postcode parser object.
     #  @param self the instance of the object that is invoking this method.

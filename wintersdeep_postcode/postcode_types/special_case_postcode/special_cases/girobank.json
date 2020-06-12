@@ -1,0 +1,6 @@
+{
+    "identifier": "giro",
+    "regex-patterns": [ 
+        [ "GIR", "0AA" ]
+    ] 
+}

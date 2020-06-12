@@ -1,0 +1,7 @@
+{
+    "identifier": "santa",
+    "regex-patterns": [
+        [ "SAN", "TA1" ],
+        [ "XM4", "5HQ" ]
+    ]
+}
