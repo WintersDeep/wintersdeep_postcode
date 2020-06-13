@@ -399,7 +399,7 @@ class TestPostcodeParser(TestCase):
 
     ## attempts to parse every postcode in the UK to check we are good.
     #  @remarks will only do this if the relevant file is available.
-    def test_parse_all_current_uk_postocodes__if_available(self):
+    def test_parse_all_current_uk_postcodes__if_available(self):
         
         from os.path import exists
         
