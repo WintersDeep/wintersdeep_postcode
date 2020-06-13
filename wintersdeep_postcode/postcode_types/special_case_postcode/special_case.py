@@ -1,9 +1,6 @@
 # python3 imports
 from json import loads
 
-# project imports
-from wintersdeep_postcode.postcode import Postcode
-
 ## Properties parsing for a special case postcode
 class SpecialCase(object):
 
@@ -32,6 +29,8 @@ class SpecialCase(object):
 
         for case_pattern in json.pop("regex-patterns"):
             special_case.add_pattern(case_pattern)
+
+        special_case.examples.extend( json.pop("examples") )
             
         return special_case
 
@@ -55,8 +54,8 @@ class SpecialCase(object):
         SpecialCase.Map[identifier] = self
         self.identifier = identifier
         self.patterns = []
-        self.parsers = []
-
+        self.examples = []
+        
     ## Add a regex pattern which recognises this special case.
     #  @remarks the pattern is specified by array, each part is a chunk of the postcode seperated by whitespace
     #  @remarks we do this as whitespace handling/tolerance is defined by the parser.
