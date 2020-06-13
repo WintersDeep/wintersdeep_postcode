@@ -68,14 +68,14 @@ class SpecialCasePostcode(Postcode):
     #  @returns the postcodes outward code as a string.
     @property
     def outward_code(self):
-        return  postcode_parts[0]
+        return  self.postcode_parts[0]
 
     ## Gets the postcodes inward code.
     #  @param self the instance of the object that is invoking this method.
     #  @returns the postcodes outward code as s string.
     @property
     def inward_code(self):
-        return  postcode_parts[-1] if len(postcode_parts) > 1 else ""
+        return  self.postcode_parts[-1] if len(self.postcode_parts) > 1 else ""
 
     ## Returns a simple string representation of the object.
     #  @param self the instance of the object that is invoking this method.
