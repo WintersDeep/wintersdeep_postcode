@@ -11,7 +11,8 @@ class SpecialCase(object):
     Map = {}
 
     ## Loads all JSON files in the specified directory.
-    #  @param directory_path the path to the directory with files that should be loaded. 
+    #  @param directory_path the path to the directory with files that should be loaded.
+    #  @param recursive indicates if we should recursively load from the given directory,
     @staticmethod
     def LoadFromDirectory(directory_path, recursive=True):
         from glob import iglob
@@ -56,56 +57,78 @@ class SpecialCase(object):
         self.patterns = []
         self.parsers = []
 
-    ## Add a pattern to recognise this special case.
+    ## Add a regex pattern which recognises this special case.
+    #  @remarks the pattern is specified by array, each part is a chunk of the postcode seperated by whitespace
+    #  @remarks we do this as whitespace handling/tolerance is defined by the parser.
     #  @param self the instance of the object that is invoking this method.
     #  @param pattern_parts the parts of the pattern seperated by whitespace.
     def add_pattern(self, pattern_parts):
 
         if pattern_parts.__class__ is str:
-            pattern_parts = [ pattern_parts ]
-        elif not pattern_parts.__class__ is list:
-            bad_type_name = pattern_parts.__class__.__name__
-            raise TypeError(fr"pattern_parts is {bad_type_name}; expected str or list.")
+            pattern_parts = pattern_parts.split(" ")
         
         pattern_parts = [ s.strip() for s in pattern_parts ]
         pattern_parts = list( filter( None, pattern_parts ))
 
-        if len(pattern_parts) == 0:
-            raise ValueError("pattern_parts is an empty, or contained only empty strings - this won't work.")
-        elif len(pattern_parts) == 1:
-            pattern_parts.append("")
+        if len(pattern_parts) > 0:
+            self.patterns.append(pattern_parts)
 
-        self.patterns.append(pattern_parts)
-
+    ## given the whitespace handling, compile a regular expression that can be
+    #  used to identify this special case - it must follow these rules set out in the 
+    #  comments in the function body.
+    #  @param self the instance of the object invoking this method.
+    #  @param whitespace the whitespace regex that should be used to join the parts.
+    #  @returns a regular expression to detect this special case.
     def get_detection_regex(self, whitespace):
 
         #
-        # pattern parts arriving at this point should not be in any encapsulating
-        # brackets - any internal brackets should be non-capture groups (i.e they
-        # should start with "?:", otherwise they might mess up some logic).
-        #
+        # ADDITIONAL RULES:
+        # to extract each group from the postcode we extract all the postition matches.
+        # as such the created regex must follow these additional rules:
+        #   [*] each group/part must be encapsulated in a group (brackets).
+        #   [*] the regex for each pattern must not result in additional groups - if they
+        #       are needed they must be non-capture groups (these start with ?:).
+        # if you dont follow these rules - this will break / not work
 
-        regex_pattern_subpatterns = [ whitespace.join([
-            fr"({s})" for s in p
-        ]) for p in self.patterns ]
-        regex_pattern = "|".join( fr"(?:{s})" for s in regex_pattern_subpatterns )
-        return fr"(?P<{self.identifier}>{regex_pattern})"    
+        regex_pattern_subpatterns = []
+        
+        for pattern in self.patterns:
+            # encapsulate pattern parts in brackets
+            pattern_parts = [ f"({part})" for part in pattern ]
+            # join them together...
+            pattern_regex = whitespace.join(pattern_parts)
+            # wrap them in a group to prevent partial matches - but to ensure we don't
+            # mess up the group logic described above - make it a non-capture group.
+            wrapped_regex = f"(?:{pattern_regex})"
+            # append to output regexes
+            regex_pattern_subpatterns.append(wrapped_regex)
+        
+        full_regex_pattern = "|".join( regex_pattern_subpatterns )
+        return fr"(?P<{self.identifier}>{full_regex_pattern})"    
+
+## Loads special cases from the included special cases directory.
+#  @remarks this is currently invoked just below - might want to change this?
+def load_special_cases():    
+    from os.path import dirname, join
+    FILE_DIRECTORY = dirname(__file__)
+    SPECIAL_CASE_DIRECTORY = join(FILE_DIRECTORY, "special_cases")
+    SpecialCase.LoadFromDirectory(SPECIAL_CASE_DIRECTORY)
+
+# load the default special cases.
+load_special_cases()
+
+if __name__ == "__main__":
     
-    def get_internal_parsers(self):
-        
-        outward_code = [ fr"(?P<outward_code>{pattern_parts[0]})" ]
-        inward_code  = [ fr"(?P<inward_code>{pattern_parts[-1]})" ]
-        other_code   = pattern_parts[1:-1]
+    ##
+    ##  If this class is the main entry point then we should run tests.
+    ##
 
-        regex_string = Postcode.LenientWhitespace.join(
-            outward_code + other_code + inward_code)
-        
-        parser_regex = Postcode.GetParseRegex(regex_string)
+    from unittest import TextTestRunner, defaultTestLoader
+    from special_case_tests import TestSpecialCase
 
-        self.parsers.append(parser_regex)
+    print("Running SpecialCase unit tests...")
 
-# Load all the special cases from directory
-from os.path import dirname, join
-FILE_DIRECTORY = dirname(__file__)
-SPECIAL_CASE_DIRECTORY = join(FILE_DIRECTORY, "special_cases")
-SpecialCase.LoadFromDirectory(SPECIAL_CASE_DIRECTORY)
+    test_runner = TextTestRunner()
+    test_loader_fn = defaultTestLoader.loadTestsFromTestCase
+    unit_tests = test_loader_fn( TestSpecialCase )
+    test_runner.run( unit_tests )
