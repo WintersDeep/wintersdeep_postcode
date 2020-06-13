@@ -1,10 +1,5 @@
-# python3 imports
-from gettext import gettext as _
-
-
 # project imports
 from wintersdeep_postcode.postcode import Postcode
-from wintersdeep_postcode.exceptions.validation_fault import ValidationFault
 from wintersdeep_postcode.postcode_types.special_case_postcode.special_case import SpecialCase
 
 ## A postcode which doesn't follow any rules.
@@ -44,23 +39,70 @@ class SpecialCasePostcode(Postcode):
         # object type, validation was the very act of parsing...
         return [ ]
 
+    ## Gets the special case definition from a regex match. Does this by working out
+    #  which regex matched (by looking at named groups), and using the label to map
+    #  back to the definition class.
+    #  @param regex_match the regex that matched the special case regeular expression
+    #  @returns the special case definition object
+    @staticmethod
+    def GetDefinitionFromRegex(regex_match):
+
+        # gets all the named matches as a group - this will include results for
+        # all special cases - but one or more may have a value.
+        all_results = regex_match.groupdict()
+
+        # next we convert the dict into (key,value) tuples, and remove any that
+        # did not get a match - this should leave us with one or more tuples
+        only_matches = filter( lambda kvp: kvp[1], all_results.items() )
+
+        # we might have more than one result, but should have at least one.
+        # we might have more if the same pattern is used in multiple special cases.
+        # this isn't actually expected to happen - but its worth noting it could.
+
+        # pop off the first (and hopefully only) match, and take its key value
+        first_match = next(only_matches)[0]
+        
+        # return the special case definition from the special cases map.
+        return SpecialCase.Map[first_match]
+
+    ## Get a list of the postcode parts / blocks from the entire regex match
+    #  @param case_type the type of regex that matched; used to prevent having to be recursive.
+    #  @param regex_match the regex match that was used to parse the query.
+    #  @returns the postcode block as a list, this may be one or more items (usually 2, but not certain)
+    @staticmethod
+    def GetPostcodePartsFromRegex(case_type, regex_match):
+
+        # the rules of the regex state that there should be no groups other than those
+        # that wrap the postcode parts, or an entire postocde. Those that wrap the 
+        # entire postcode should be named. Therefor to this match should be, a lot of 
+        # None's from the failed matches, the actual named match, and its part groups.
+        # To get our list of parts therefor we need to pop off the named match, and 
+        # filter the Nones...
+        
+        # get an ordered list of all the matches.
+        postcode_parts = list( regex_match.groups() )
+
+        # work out where the full match is (so we can remove it)
+        original_regex = regex_match.re
+        named_groups_map = original_regex.groupindex
+        target_group_index = named_groups_map[case_type]
+
+        # this always seems to be +1 of the actual index?
+        postcode_parts.pop(target_group_index -1)
+        postcode_parts = filter(None, postcode_parts)
+        
+        return list(postcode_parts)
+
+
     ## Creates a new instance of the standard postcode object.
     #  @param self the instance of the object that is invoking this method,
     #  @param regex_match regular expression match describing the postcode.
     def __init__(self, regex_match):
         super().__init__(regex_match)
-
-        all_results = regex_match.groupdict()
-        only_matches = filter( lambda kvp: kvp[1], all_results.items() )
-        first_match = next(only_matches)[0]
-        
-        self.special_case = SpecialCase.Map[first_match]
-        postcode_parts = list( regex_match.groups() )
-        for index in reversed( list(regex_match.re.groupindex.values() )):
-            postcode_parts.pop(index - 1)
-        
-        postcode_parts = filter(None, postcode_parts)
-        self.postcode_parts = list(postcode_parts)
+        self.special_case = SpecialCasePostcode.GetDefinitionFromRegex(regex_match)
+        self.postcode_parts = SpecialCasePostcode.GetPostcodePartsFromRegex(
+            self.special_case.identifier, regex_match
+        )
 
 
     ## Gets the postcodes outward code.
@@ -82,3 +124,20 @@ class SpecialCasePostcode(Postcode):
     #  @returns a string representation of this object suitable for user consumption.
     def __str__(self):
         return " ".join(self.postcode_parts)
+
+
+if __name__ == "__main__":
+    
+    ##
+    ##  If this class is the main entry point then we should run tests.
+    ##
+
+    from unittest import TextTestRunner, defaultTestLoader
+    from special_case_postcode_tests import TestSpecialCasePostcode
+
+    print("Running SpecialCasePostcode unit tests...")
+
+    test_runner = TextTestRunner()
+    test_loader_fn = defaultTestLoader.loadTestsFromTestCase
+    unit_tests = test_loader_fn( TestSpecialCasePostcode )
+    test_runner.run( unit_tests )
