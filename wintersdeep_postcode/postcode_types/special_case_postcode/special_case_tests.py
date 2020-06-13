@@ -27,6 +27,9 @@ class TestSpecialCase(TestCase):
         self.assertIn( "santa", SpecialCase.Map )
         self.assertIn( "giro", SpecialCase.Map )
 
+        for identifier, special_case in SpecialCase.Map.items():
+            self.assertEqual(identifier, special_case.identifier)
+
     ## tests that we can load a special case from a JSON string - ensures the JSON loader
     #  is working in a predictable manner. Changes required to make this test pass should
     #  be considered potentially breaking.
@@ -41,7 +44,8 @@ class TestSpecialCase(TestCase):
                     [ "SINGLE" ],
                     "STRING",
                     [ "THREE", "PARTS", "HERE" ]
-                ]
+                ],
+                "examples": [ "PAT RN0", "PAT RN8", "SINGLE", "THREE PARTS HERE" ]
             }
         """)
 
