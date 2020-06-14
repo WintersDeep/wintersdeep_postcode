@@ -69,7 +69,7 @@ class ForcesPostcode(Postcode):
         faults = []
 
         if not postcode.is_bfpo_format:
-            if postcode.district > 2:
+            if postcode.outward_district > 2:
                 faults.append(ForcesPostcode.InvalidDistrict)
 
         return faults
@@ -87,30 +87,30 @@ class ForcesPostcode(Postcode):
 
         if self.is_bfpo_format:
             self.bfpo = int(bfpo)
-            self.area = None
-            self.district = None
-            self.sector = None
-            self.unit = None
+            self.outward_area = None
+            self.outward_district = None
+            self.inward_sector = None
+            self.inward_unit = None
         else:
             self.bfpo = None
-            self.area = "BF"
-            self.district = int(regex_match.group("district"))
-            self.sector = regex_match.group("sector")
-            self.unit = regex_match.group("unit")
+            self.outward_area = "BF"
+            self.outward_district = int(regex_match.group("district"))
+            self.inward_sector = int(regex_match.group("sector"))
+            self.inward_unit = regex_match.group("unit")
 
     ## Gets the postcodes outward code.
     #  @param self the instance of the object that is invoking this method.
     #  @returns the postcodes outward code as a string.
     @property
     def outward_code(self):
-        return  "BFPO" if self.is_bfpo_format else f"{self.area}{self.district}"
+        return  "BFPO" if self.is_bfpo_format else f"{self.outward_area}{self.outward_district}"
     
     ## Gets the postcodes inward code.
     #  @param self the instance of the object that is invoking this method.
     #  @returns the postcodes outward code as s string.
     @property
     def inward_code(self):
-        return  str(self.bfpo) if self.is_bfpo_format else f"{self.sector}{self.unit}"
+        return  str(self.bfpo) if self.is_bfpo_format else f"{self.inward_sector}{self.inward_unit}"
 
     ## Returns a simple string representation of the object.
     #  @param self the instance of the object that is invoking this method.
