@@ -62,7 +62,8 @@ class PostcodeCliApp(object):
         self.log.debug(f"Inspecting input string '{postcode}'...")
 
         try:
-            self.log.info( self.parser(postcode) )
+            postcode = self.parser(postcode)
+            self.log.info( f"{postcode} ({postcode.postcode_type})" )
         except ParseError as ex:
             self.log.warning(f"Failed to parse '{postcode}': {ex}")
         except ValidationError as ex:

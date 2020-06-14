@@ -1,11 +1,12 @@
 # project imports
 from wintersdeep_postcode.postcode_types.standard_postcode.standard_postcode import StandardPostcode
 from wintersdeep_postcode.postcode_types.special_case_postcode.special_case_postcode import SpecialCasePostcode
-
+from wintersdeep_postcode.postcode_types.forces_postcode.forces_postcode import ForcesPostcode
 ## a list of all supported parsers in order of priority
 #  @remarks parser results should be issued from the first parser to both parse, and validate.
 postcode_type_objects = [
     SpecialCasePostcode,
+    ForcesPostcode,
     StandardPostcode
 ]
 
