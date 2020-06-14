@@ -9,15 +9,20 @@
 # 100-199: Generic Postcode Faults
 
 # 200-299: Standard Postcode
-201, 'standard', 'area expects only single digit districts', 'postcode_types/standard_postcode.py'
-202, 'standard', 'area expects only double digit districts', 'postcode_types/standard_postcode.py'
-203, 'standard', 'area not expected to have district zero', 'postcode_types/standard_postcode.py'
-204, 'standard', 'area not expected to have district ten', 'postcode_types/standard_postcode.py'
-205, 'standard', 'area/district not expected to have subdistricts ', 'postcode_types/standard_postcode.py'
-206, 'standard', 'area/district does not have the specific subdistrict used ', 'postcode_types/standard_postcode.py'
-207, 'standard', 'unused characters in first postition', 'postcode_types/standard_postcode.py'
-208, 'standard', 'unused characters in second postition', 'postcode_types/standard_postcode.py'
-209, 'standard', 'unused subdistrict for single digit area', 'postcode_types/standard_postcode.py'
-210, 'standard', 'unused subdistrict for double digit area', 'postcode_types/standard_postcode.py'
-211, 'standard', 'first character of postcode unit is not valid.', 'postcode_types/standard_postcode.py'
-212, 'standard', 'second character of postcode unit is not valid.', 'postcode_types/standard_postcode.py'
+201, 'standard', 'area expects only single digit districts', 'postcode_types/standard_postcode/standard_postcode.py'
+202, 'standard', 'area expects only double digit districts', 'postcode_types/standard_postcode/standard_postcode.py'
+203, 'standard', 'area not expected to have district zero', 'postcode_types/standard_postcode/standard_postcode.py'
+204, 'standard', 'area not expected to have district ten', 'postcode_types/standard_postcode/standard_postcode.py'
+205, 'standard', 'area/district not expected to have subdistricts ', 'postcode_types/standard_postcode/standard_postcode.py'
+206, 'standard', 'area/district does not have the specific subdistrict used ', 'postcode_types/standard_postcode/standard_postcode.py'
+207, 'standard', 'unused characters in first postition', 'postcode_types/standard_postcode/standard_postcode.py'
+208, 'standard', 'unused characters in second postition', 'postcode_types/standard_postcode/tandard_postcode.py'
+209, 'standard', 'unused subdistrict for single digit area', 'postcode_types/standard_postcode/standard_postcode.py'
+210, 'standard', 'unused subdistrict for double digit area', 'postcode_types/standard_postcode/standard_postcode.py'
+211, 'standard', 'first character of postcode unit is not valid.', 'postcode_types/standard_postcode/standard_postcode.py'
+212, 'standard', 'second character of postcode unit is not valid.', 'postcode_types/standard_postcode/standard_postcode.py'
+
+# 300-399: Special Case Postcode
+
+# 400-399: BFPO Postcode
+401, 'forces', 'a bfpo district can only be 1 or 2 - it wasnt.', 'postcode_types/forces_postcode/forces_postcode.py'
