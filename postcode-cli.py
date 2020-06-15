@@ -4,8 +4,7 @@ from argparse import ArgumentParser
 from gettext import gettext as _
 
 # project imports
-from wintersdeep_postcode.postcode_parser import PostcodeParser
-from wintersdeep_postcode.exceptions import ParseError, ValidationError
+from wintersdeep_postcode import parse_postcode, ParseError, ValidationError
 
 ## Simple CLI interface for the library.
 #  @remarks this is useful for testing, debugging and demonstrating how to use the library.
@@ -29,7 +28,6 @@ class PostcodeCliApp(object):
     #  @param self the instance of the object that is invoking this method.
     def __init__(self):
         self.log = getLogger("postcode-cli")
-        self.parser = PostcodeParser()
 
     ## Parses any arguments supplied by the command line interface and returns
     #  them so they can be actioned.
@@ -62,7 +60,7 @@ class PostcodeCliApp(object):
         self.log.debug(f"Inspecting input string '{postcode}'...")
 
         try:
-            postcode = self.parser(postcode)
+            postcode = parse_postcode(postcode)
             self.log.info( f"{postcode} ({postcode.postcode_type})" )
         except ParseError as ex:
             self.log.warning(f"Failed to parse '{postcode}': {ex}")
