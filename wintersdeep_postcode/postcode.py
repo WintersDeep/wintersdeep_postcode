@@ -34,7 +34,7 @@ class Postcode(object):
     #  @param regex_match the regular expression that triggered building this object.
     def __init__(self, regex_match):
         self._original_regex_match = regex_match
-        self.validation_faults = []
+        self.validation_faults = {}
         self.is_validated = False
     
     ## The type of postcode that this represents.
