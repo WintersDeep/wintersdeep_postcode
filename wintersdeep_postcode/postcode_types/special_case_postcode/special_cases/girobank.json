@@ -1,6 +1,6 @@
 {
     "identifier": "giro",
-    "regex-patterns": [ 
+    "patterns": [ 
         [ "GIR", "0AA" ]
     ],
     "examples": [ "GIR 0AA" ]

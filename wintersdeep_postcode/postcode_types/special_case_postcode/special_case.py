@@ -27,7 +27,7 @@ class SpecialCase(object):
         special_case_id = json.pop("identifier")
         special_case = SpecialCase( special_case_id )
 
-        for case_pattern in json.pop("regex-patterns"):
+        for case_pattern in json.pop("patterns"):
             special_case.add_pattern(case_pattern)
 
         special_case.examples.extend( json.pop("examples") )
