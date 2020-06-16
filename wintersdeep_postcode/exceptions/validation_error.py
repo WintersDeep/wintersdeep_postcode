@@ -1,9 +1,10 @@
 # python3 imports
 from gettext import gettext as _
+from wintersdeep_postcode.exceptions.postcode_error import PostcodeError
 
 ## Postcode Validation error
 #  Raised when a postcode fails to validate.
-class ValidationError(ValueError):
+class ValidationError(PostcodeError):
     
     ## Creates a new instance of the validation error object.
     #  @param self the instance of the object that is invoking this method.
