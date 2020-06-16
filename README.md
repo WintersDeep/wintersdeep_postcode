@@ -69,6 +69,7 @@ The final example demonstrates an implementation of with the library used as it 
         print( str(ex) )
 
 As mentioned, this is preferred as it allows you to configure how the parser behaves to best meet your use case. This is done by passing keyword arguments to the `PostcodeParser` constructor. It accepts the following keyword arguments:
+
 |Keyword|Default|Description|
 |--|--|--|
 |whitespace  |”tolerant”  | Determines how the parser handles the whitespace which separates the outward and inward codes (the two groups of alpha-numeric strings in a normal postcode). Options are “*lenient*” (zero or more characters of any whitespace type), “*tolerant*” (either no whitespace, or a single space character), and “*strict*” (a single space character only).|
@@ -120,15 +121,14 @@ You have two options for creating a custom special case:
  - You can create one from a JSON string; either directly loaded in the software using `SpecialCase.FromJsonString` or from a file via `SpecialCase.FromJsonFile`. The recommendation would be to add your special case to the default special case directory `./postcode_types/special_case_postcode/special_cases` as it will then be automatically loaded without any other changes. 
 
 The following properties need to be defined in either JSON or the object:
+
 |Property| Type | Description |
 |--|--|--|
 | identifier| str | a unique string that identifies this special case. it must be alpha-numeric (basically be suitable for a regular expression group label). |
 | patterns | list | A list of patterns used to match this special case. Each pattern can itself either be a raw string, explicitly setting the postcode string in its strict form - or an array, describing each part of the postcode (example: “GIR 0AA” and [“GIR”, “0AA”] are equivalent). When using the array syntax it is safe to use regular expression syntax, however care must be taken that any group expression used is non-capturing. This list must have at least one value.|
 |examples|list|A list of strings that give valid examples of this special case. This is used for testing purposes.
 
-## Donations, Licence and Farewell.
-If this library saved you some time, or makes you some pennies and you are so inclined any donation is obviously gratefully received, but you are under absolutely no obligation to do so.
-
-You are free to use this library in any capacity that is in accordance with the MIT licence that accompanies the project. That should cover most use cases.
+## Licence and Farewell.
+You are free to use this library in any capacity that is in accordance with the [MIT licence](https://www.github.com/WintersDeep/wintersdeep_postcode/blob/master/LICENSE.md) that accompanies the project. That should cover most use cases.
 
 If you have a cool use-case, or application, I’m always glad to hear about it - its always interesting to hear where your code ends up. If you need some help adapting the library to your use case, feel free to drop me an email. I cant promise I’ll be able to get back to you quickly - life’s busy, you know the deal, but I’ll try.
