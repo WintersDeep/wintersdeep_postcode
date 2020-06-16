@@ -27,7 +27,7 @@ class TestSpecialCasePostcode(TestCase):
         cls.SpecialCase = SpecialCase.FromJsonString("""
             {{
                 "identifier": "{label}",
-                "regex-patterns": [
+                "patterns": [
                     [ "SCP", "XX(?:[0-9])" ],
                     [ "LHS", "RHS"],
                     [ "EXAMPLE" ],

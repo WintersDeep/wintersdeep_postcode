@@ -38,7 +38,7 @@ class TestSpecialCase(TestCase):
         SpecialCase.FromJsonString("""
             {
                 "identifier": "unittest1",
-                "regex": [
+                "patterns": [
                     [ "PAT", "RN(?:[0-9])" ],
                     [ "UN1", "TST"],
                     [ "SINGLE" ],
