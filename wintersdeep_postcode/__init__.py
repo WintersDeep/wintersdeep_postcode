@@ -14,6 +14,14 @@ __status__      =   "Development"
 from wintersdeep_postcode.postcode_parser import PostcodeParser
 from wintersdeep_postcode.exceptions import (PostcodeError, ValidationError, ParseError)
 
+## Defines the modules that will be imported when someone uses *
+__all__ = [
+    "PostcodeParser",
+    "PostcodeError",
+    "ValidationError",
+    "ParseError"
+]
+
 ## Parses a postcode string using the default postcode parser.
 #  @param postcode_string the postcode string that should be parsed.
 #  @returns the postcode string as a postcode object.
