@@ -1,4 +1,6 @@
 # WintersDeep Postcode
+[![Build Status](https://travis-ci.org/WintersDeep/wintersdeep_postcode.svg?branch=development)](https://travis-ci.org/WintersDeep/wintersdeep_postcode)
+
 This is a Python3 library for parsing, heuristically validating, and formatting a postcode from, or associated with, the United Kingdom. The library makes use of information, rules and observations detailed on the “[Postcodes in the United Kingdom](https://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom)” Wikipedia page. The results of using this library are never going to be 100% conclusive as this would require checking input against a definitive database of all active postcodes, but does act as a good 	*“at a glance”* check.
 
 The library provides the following features:
