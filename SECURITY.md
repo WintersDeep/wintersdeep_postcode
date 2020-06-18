@@ -7,7 +7,7 @@ With that in mind; what are you looking for?
 
  - [I found a security vulnerability](#i-found-a-security-vulnerability)
  - [I want to be notified of security vulnerabilities](#I-want-to-be-notified-of-security-vulnerabilities)
- - [The “Hall of Fame”](#hall-of-fame)
+ - [The “Hall of Fame” / Known Exploits](#hall-of-fame-known-exploits)
 
 ## I found a security vulnerability
 If you think you have discovered a vulnerability, and you are here it would suggest you are interested in responsible disclosure - so thank you! Obviously the ball is in your court here, but we would ask you do the following:
@@ -41,5 +41,7 @@ Your email address will not be used for any other purposes (including notificati
 Please ensure that “@wintersdeep.com” emails are whitelisted by your mail provider. 
 
 
-## Hall of Fame
+## Hall of Fame / Known Exploits
+This section will list any known vulnerabilities, what version is impacted, when it was fixed and who did the damage (if they want to be known).
+
 No ones found anything yet; are you going to be the first?
