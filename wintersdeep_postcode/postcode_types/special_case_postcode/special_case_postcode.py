@@ -27,7 +27,7 @@ class SpecialCasePostcode(Postcode):
         special_cases = SpecialCase.Map
         regex_pattern = "|".join([ sc.get_detection_regex(whitespace_regex) \
             for sc in special_cases.values() ] )
-        return Postcode.CompileRegex(regex_pattern)
+        return Postcode.CompileRegex(f"(?:{regex_pattern})")
 
     ## Determine if the given postcode appears to be valid.
     #  @param cls the class that is invoking this method.
