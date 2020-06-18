@@ -10,17 +10,19 @@ __maintainer__  =   "WintersDeep.com"
 __email__       =   "admin@wintersdeep.com"
 __status__      =   "Development"
 
-# Import the most relevant classes up to the module scope.
-from wintersdeep_postcode.postcode_parser import PostcodeParser
-from wintersdeep_postcode.exceptions import (PostcodeError, ValidationError, ParseError)
-
 ## Defines the modules that will be imported when someone uses *
 __all__ = [
     "PostcodeParser",
     "PostcodeError",
     "ValidationError",
-    "ParseError"
+    "ParseError",
+    "parse_postcode",
+    "try_parse_postcode"
 ]
+
+# Import the most relevant classes up to the module scope.
+from wintersdeep_postcode.postcode_parser import PostcodeParser
+from wintersdeep_postcode.exceptions import (PostcodeError, ValidationError, ParseError)
 
 ## Parses a postcode string using the default postcode parser.
 #  @param postcode_string the postcode string that should be parsed.
