@@ -1,5 +1,5 @@
 # Module Meta Information.
-__author__      =    "Adam Williams"
+__author__      =    "WintersDeep"
 __copyright__   =    "Copyright 2020, WintersDeep.com"
 
 __license__     =    "MIT"
