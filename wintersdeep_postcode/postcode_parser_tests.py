@@ -299,17 +299,18 @@ class TestPostcodeParser(TestCase):
     #  get back a parser that loads all postcode types.
     def test__PostcodeParser_get_parser_regex_list__all_types(self):
         
-        from re import Pattern
+        from re import compile
         from wintersdeep_postcode.postcode_types import postcode_type_objects
 
         parser_list = PostcodeParser._get_parser_regex_list(type_list=None)
-        
+        compile_regex_type = compile("^$").__class__
+
         # make sure it appears we loaded all types (basic count check only)
         self.assertEqual( len(postcode_type_objects), len(parser_list) )
         
         # and that the returned list appears usable
         for regex, factory in parser_list:
-            self.assertIsInstance(regex, Pattern)
+            self.assertIsInstance(regex, compile_regex_type)
             self.assertTrue( callable(factory) )
 
         # and that the default list, is still the same as the None call.
