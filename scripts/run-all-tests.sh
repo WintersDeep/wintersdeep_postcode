@@ -17,4 +17,4 @@ fi
 
 # run the project tests.
 echo "[-] Running all wintersdeep_postcode test classes..."
-"${PYTHON}" -m unittest discover -vs "${PROJECT_DIRECTORY}" -p "*_tests.py"
+"${PYTHON}" -m unittest discover -vs "${PROJECT_DIRECTORY}"

@@ -7,7 +7,7 @@ from re import compile
 # determine where we are running (needed to patch PYTHON_PATH)
 TEST_CASE_PATH = abspath( __file__ )
 TEST_CASE_DIRECTORY = dirname( TEST_CASE_PATH )
-PROJECT_ROOT_DIRECTORY = abspath( join( TEST_CASE_DIRECTORY, "..", ".." ,"..") )
+PROJECT_ROOT_DIRECTORY = abspath( join( TEST_CASE_DIRECTORY, ".." ) )
 
 # patch up PYTHON_PATH if required.
 if not PROJECT_ROOT_DIRECTORY in python_path:
@@ -132,8 +132,7 @@ class TestSpecialCase(TestCase):
     def test__SpecialCase_ctor__duplicate_id(self):
         special_case = SpecialCase("unittest4")
         self.assertRaises(ValueError, SpecialCase, "unittest4")
-
-
+        
 
 if __name__ ==  "__main__":
 

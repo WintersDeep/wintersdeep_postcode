@@ -11,4 +11,4 @@ python:
   - 3.8
 
 script:
- - python -m unittest discover -p "*_tests.py"
+ - python -m unittest discover -v
