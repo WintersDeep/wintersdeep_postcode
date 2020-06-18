@@ -49,7 +49,12 @@ class TestPostcode(TestCase):
         fake_regex = object()
         postcode = Postcode(fake_regex)
         self.assertEqual(postcode.postcode_type, "unspecified")
-        
+
+    ## test the repr function of the postcode.
+    def test__Postcode_repr(self):
+        from wintersdeep_postcode import parse_postcode
+        self.assertEqual( repr( parse_postcode("WR1 2AX") ), "<StandardPostcode: WR1 2AX>" )
+        self.assertEqual( repr( parse_postcode("GIR 0AA") ), "<SpecialCasePostcode: GIR 0AA>" )
 
 if __name__ ==  "__main__":
 

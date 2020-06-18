@@ -44,6 +44,14 @@ class Postcode(object):
     def postcode_type(self):
         return self.__class__.PostcodeType
 
+    ## Returns a technical description of the object suitable for a developer.
+    #  @param self the instance of the object that is invoking this method.
+    #  @returns a string decsribing this object.
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        string_value = str(self)
+        return f"<{class_name}: {string_value}>"
+
 if __name__ == "__main__":
     
     ##
