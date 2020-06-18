@@ -8,3 +8,12 @@ class PostcodeError(ValueError):
     #  @param kwargs the keyword arguments supplied to this method.
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+if __name__ == "__main__":
+    
+    ##
+    ##  If this is the main entry point - someone might be a little lost?
+    ##
+
+    print(f"{__file__} ran, but doesn't do anything on its own.")
+    print(f"Check 'https://www.github.com/wintersdeep/wintersdeep_postcode' for usage.")

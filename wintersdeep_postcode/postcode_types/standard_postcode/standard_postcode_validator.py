@@ -251,3 +251,12 @@ def load_validator_params_from_json():
 
 
 load_validator_params_from_json()
+
+if __name__ == "__main__":
+    
+    ##
+    ##  If this is the main entry point - someone might be a little lost?
+    ##
+
+    print(f"{__file__} ran, but doesn't do anything on its own.")
+    print(f"Check 'https://www.github.com/wintersdeep/wintersdeep_postcode' for usage.")

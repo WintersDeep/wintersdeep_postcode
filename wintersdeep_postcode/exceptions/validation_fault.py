@@ -34,17 +34,10 @@ class ValidationFault(object):
         return self.description
 
 if __name__ == "__main__":
-
+    
     ##
-    ## If this file is the main entry point - run tests
+    ##  If this is the main entry point - someone might be a little lost?
     ##
 
-    from unittest import TextTestRunner, defaultTestLoader
-    from validation_fault_tests import TestValidationFault
-
-    print( f"Running ValidationFault unit tests...")
-
-    test_runner = TextTestRunner()
-    test_loader_fn = defaultTestLoader.loadTestsFromTestCase
-    unit_tests = test_loader_fn(TestValidationFault)
-    test_runner.run( unit_tests)
+    print(f"{__file__} ran, but doesn't do anything on its own.")
+    print(f"Check 'https://www.github.com/wintersdeep/wintersdeep_postcode' for usage.")

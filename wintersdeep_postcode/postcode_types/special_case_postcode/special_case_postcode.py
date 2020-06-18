@@ -129,15 +129,8 @@ class SpecialCasePostcode(Postcode):
 if __name__ == "__main__":
     
     ##
-    ##  If this class is the main entry point then we should run tests.
+    ##  If this the main entry point - someone might be a little lost?
     ##
-
-    from unittest import TextTestRunner, defaultTestLoader
-    from special_case_postcode_tests import TestSpecialCasePostcode
-
-    print("Running SpecialCasePostcode unit tests...")
-
-    test_runner = TextTestRunner()
-    test_loader_fn = defaultTestLoader.loadTestsFromTestCase
-    unit_tests = test_loader_fn( TestSpecialCasePostcode )
-    test_runner.run( unit_tests )
+    
+    print(f"{__file__} ran, but doesn't do anything on its own.")
+    print(f"Check 'https://www.github.com/wintersdeep/wintersdeep_postcode' for usage.")

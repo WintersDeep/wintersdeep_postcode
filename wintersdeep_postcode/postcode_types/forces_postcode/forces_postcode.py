@@ -117,3 +117,12 @@ class ForcesPostcode(Postcode):
     #  @returns a string representation of this object suitable for user consumption.
     def __str__(self):
         return f"{self.outward_code} {self.inward_code}"
+        
+if __name__ == "__main__":
+    
+    ##
+    ##  If this is the main entry point - someone might be a little lost?
+    ##
+
+    print(f"{__file__} ran, but doesn't do anything on its own.")
+    print(f"Check 'https://www.github.com/wintersdeep/wintersdeep_postcode' for usage.")
