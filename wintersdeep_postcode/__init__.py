@@ -3,7 +3,7 @@ __author__      =    "WintersDeep"
 __copyright__   =    "Copyright 2020, WintersDeep.com"
 
 __license__     =    "MIT"
-__version__     =    "0.0.0a1"
+__version__     =    "0.0.0a2"
 __credits__     =    [ ]
 
 __maintainer__  =   "WintersDeep.com"
