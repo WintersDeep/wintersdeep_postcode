@@ -1,0 +1,3 @@
+include wintersdeep_postcode/postcode_types/special_case_postcode/special_cases/girobank.json
+include wintersdeep_postcode/postcode_types/special_case_postcode/special_cases/stanta-old.json
+include wintersdeep_postcode/postcode_types/standard_postcode/standard_postcode_validator.json
