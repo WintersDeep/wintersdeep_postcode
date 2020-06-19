@@ -13,6 +13,7 @@ The library provides the following features:
  - Is dependency free.
 
 ## Table of Contents
+ - [Installation](#installation)
  - [Library Usage](#library-usage)
    - [The Quick and Ugly (parse_postcode)](#the-quick-and-ugly-parse-postcode)
    - [The Quick and Dirty (try_parse_postcode)](#the-quick-and-dirty-try-parse-postcode)
@@ -24,7 +25,11 @@ The library provides the following features:
    - [Having Validation Problems?](#having-validation-problems)
  - [Custom Special Cases](#custom-special-cases)
  - [Licence and Farewell](#licence-and-farewell)
-  
+
+## Installation
+You can quickly install the library using pip:
+`pip install wintersdeep_postcode`
+
 ## Library Usage
  This library can be used in your code using a number of interfaces; the best choice will dependion your use case and requirements.
 

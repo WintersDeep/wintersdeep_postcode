@@ -3,12 +3,12 @@ __author__      =    "WintersDeep"
 __copyright__   =    "Copyright 2020, WintersDeep.com"
 
 __license__     =    "MIT"
-__version__     =    "0.0.0a2"
+__version__     =    "1.0.0"
 __credits__     =    [ ]
 
 __maintainer__  =   "WintersDeep.com"
 __email__       =   "admin@wintersdeep.com"
-__status__      =   "Development"
+__status__      =   "Production"
 
 ## Defines the modules that will be imported when someone uses *
 __all__ = [
